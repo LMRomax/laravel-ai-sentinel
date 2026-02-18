@@ -1,0 +1,9 @@
+cat > .gitignore << 'EOF'
+/vendor/
+composer.lock
+.phpunit.result.cache
+.idea/
+.vscode/
+*.log
+.DS_Store
+EOF
