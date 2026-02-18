@@ -62,7 +62,7 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --ci --colors=always --verbose
+        run: vendor/bin/pest --ci --colors=always --display-errors
 
       - name: Check code style
         run: vendor/bin/pint --test
