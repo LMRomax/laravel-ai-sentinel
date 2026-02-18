@@ -9,48 +9,60 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.2, 8.3]
+        php: [8.2, 8.3, 8.4]
         laravel: [11.*, 12.*]
         stability: [prefer-stable]
         include:
-          - laravel: 11.*
-            testbench: 9.*
-          - laravel: 12.*
-            testbench: 10.*
+          - laravel: "11.*"      # ← Quotes pour éviter parsing bizarre
+            testbench: "9.*"
+          - laravel: "12.*"
+            testbench: "10.*"
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP with extensions
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, pdo_sqlite, sqlite3, bcmath, soap, intl, gd, exif, iconv
+          ini-values: |
+            pdo_sqlite.enable=1
           coverage: none
+
+      - name: Verify SQLite driver
+        run: |
+          php -r "echo extension_loaded('pdo_sqlite') ? 'pdo_sqlite OK' : 'pdo_sqlite MISSING';"
 
       - name: Setup problem matchers
         run: |
           echo "::add-matcher::${{ runner.tool_cache }}/php.json"
           echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ matrix.php }}-laravel-${{ matrix.laravel }}-${{ hashFiles('**/composer.lock') }}
+
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --prefer-stable
 
       - name: List Installed Dependencies
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --ci
+        run: vendor/bin/pest --ci --colors=always --verbose
 
       - name: Check code style
         run: vendor/bin/pint --test

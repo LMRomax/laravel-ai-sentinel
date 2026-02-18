@@ -3,7 +3,7 @@
 namespace Lmromax\LaravelAiGuard\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 
 class CostChart extends Component
 {
@@ -17,7 +17,7 @@ class CostChart extends Component
     public function loadChartData()
     {
         // Get last 7 days of data
-        $data = AiPromptLog::selectRaw('DATE(created_at) as date, SUM(cost) as total_cost')
+        $data = AiPromptsLog::selectRaw('DATE(created_at) as date, SUM(cost) as total_cost')
             ->where('created_at', '>=', now()->subDays(7))
             ->groupBy('date')
             ->orderBy('date')

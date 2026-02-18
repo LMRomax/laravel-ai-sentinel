@@ -3,7 +3,7 @@
 namespace Lmromax\LaravelAiGuard\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 
 class ProviderChart extends Component
 {
@@ -17,7 +17,7 @@ class ProviderChart extends Component
     public function loadChartData()
     {
         // Get provider distribution for current month
-        $data = AiPromptLog::selectRaw('provider, SUM(cost) as total_cost')
+        $data = AiPromptsLog::selectRaw('provider, SUM(cost) as total_cost')
             ->where('created_at', '>=', now()->startOfMonth())
             ->groupBy('provider')
             ->orderByDesc('total_cost')

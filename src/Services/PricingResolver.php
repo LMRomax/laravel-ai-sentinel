@@ -8,11 +8,9 @@ class PricingResolver
 {
     protected ?PricingSyncService $syncService = null;
 
-    public function __construct()
+    public function __construct(?PricingSyncService $syncService = null)
     {
-        if (config('ai-guard.auto_sync_pricing', true)) {
-            $this->syncService = new PricingSyncService();
-        }
+        $this->syncService = $syncService;
     }
 
     /**
@@ -34,6 +32,12 @@ class PricingResolver
             }
 
             Log::info("AI Guard: Model [{$provider}/{$model}] not found in remote pricing, falling back.");
+        }
+
+        $configPricing = config("ai-guard.providers.{$provider}.models.{$model}");
+
+        if ($configPricing) {
+            return $configPricing;
         }
 
         // 2. Custom models définis par l'utilisateur

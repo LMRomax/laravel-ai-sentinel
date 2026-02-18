@@ -3,7 +3,7 @@
 namespace Lmromax\LaravelAiGuard\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 
 class TopModels extends Component
 {
@@ -16,7 +16,7 @@ class TopModels extends Component
 
     public function loadTopModels()
     {
-        $this->topModels = AiPromptLog::selectRaw('
+        $this->topModels = AiPromptsLog::selectRaw('
                 provider,
                 model,
                 COUNT(*) as request_count,

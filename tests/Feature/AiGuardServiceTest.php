@@ -1,7 +1,7 @@
 <?php
 
 use Lmromax\LaravelAiGuard\Facades\AiGuard;
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 
 beforeEach(function () {
     $this->artisan('migrate');
@@ -19,7 +19,7 @@ describe('AiGuard Facade', function () {
             'tokens_output' => 50,
         ]);
 
-        expect(AiPromptLog::count())->toBe(1);
+        expect(AiPromptsLog::count())->toBe(1);
     });
 
     it('optimizes a prompt via facade', function () {

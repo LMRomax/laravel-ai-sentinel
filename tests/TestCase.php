@@ -3,6 +3,7 @@
 namespace Lmromax\LaravelAiGuard\Tests;
 
 use Lmromax\LaravelAiGuard\AiGuardServiceProvider;
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -16,6 +17,7 @@ class TestCase extends Orchestra
     {
         return [
             AiGuardServiceProvider::class,
+            LivewireServiceProvider::class,
         ];
     }
 
@@ -31,7 +33,10 @@ class TestCase extends Orchestra
 
         // Setup ai-guard config
         $app['config']->set('ai-guard.enabled', true);
-        $app['config']->set('ai-guard.auto_sync_pricing', false); // Désactivé en test
+
+        // IMPORTANT : Désactive auto-sync en tests
+        $app['config']->set('ai-guard.auto_sync_pricing', false);
+
         $app['config']->set('ai-guard.table_name', 'ai_prompt_logs');
         $app['config']->set('ai-guard.default_pricing', [
             'input'  => 0.001,
@@ -46,6 +51,8 @@ class TestCase extends Orchestra
             'cache_ttl'          => 3600,
         ]);
         $app['config']->set('ai-guard.custom_models', []);
+
+        // IMPORTANT : Définis les providers pour les tests
         $app['config']->set('ai-guard.providers', [
             'openai' => [
                 'models' => [

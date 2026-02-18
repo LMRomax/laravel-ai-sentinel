@@ -1,6 +1,6 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 use Lmromax\LaravelAiGuard\Services\PromptLogger;
 
 beforeEach(function () {
@@ -23,9 +23,9 @@ describe('PromptLogger', function () {
             'duration_ms'    => 800,
         ]);
 
-        expect(AiPromptLog::count())->toBe(1);
+        expect(AiPromptsLog::count())->toBe(1);
 
-        $log = AiPromptLog::first();
+        $log = AiPromptsLog::first();
         expect($log->provider)->toBe('openai');
         expect($log->model)->toBe('gpt-4o');
         expect($log->tokens_input)->toBe(100);
@@ -42,7 +42,7 @@ describe('PromptLogger', function () {
             'tokens_output' => 1000,
         ]);
 
-        $log = AiPromptLog::first();
+        $log = AiPromptsLog::first();
 
         // gpt-4o: input=0.0025, output=0.01 → total=0.0125
         expect((float) $log->cost)->toBe(0.0125);
@@ -59,7 +59,7 @@ describe('PromptLogger', function () {
             'tokens_output' => 50,
         ]);
 
-        expect(AiPromptLog::count())->toBe(0);
+        expect(AiPromptsLog::count())->toBe(0);
     });
 
     it('returns stats for a given period', function () {
@@ -91,7 +91,7 @@ describe('PromptLogger', function () {
             'metadata'      => ['source' => 'test', 'tokens_saved' => 10],
         ]);
 
-        $log = AiPromptLog::first();
+        $log = AiPromptsLog::first();
 
         expect($log->metadata)->toBeArray();
         expect($log->metadata['source'])->toBe('test');

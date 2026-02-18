@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lmromax\LaravelAiGuard\Console\Commands\SyncPricingCommand;
 use Lmromax\LaravelAiGuard\Services\AiGuardService;
+use Lmromax\LaravelAiGuard\Services\PricingSyncService;
+use Lmromax\LaravelAiGuard\Services\PricingResolver;
+use Lmromax\LaravelAiGuard\Services\CostCalculator;
+use Lmromax\LaravelAiGuard\Services\PromptLogger;
+use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
 
 class AiGuardServiceProvider extends ServiceProvider
 {
@@ -14,16 +19,29 @@ class AiGuardServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Merge config
         $this->mergeConfigFrom(
             __DIR__ . '/../config/ai-guard.php',
             'ai-guard'
         );
 
-        // Register singleton
-        $this->app->singleton('ai-guard', function ($app) {
-            return new AiGuardService();
+        // Bind core services
+        $this->app->singleton(PricingSyncService::class);
+        $this->app->singleton(PricingResolver::class, function ($app) {
+            return new PricingResolver(
+                config('ai-guard.auto_sync_pricing', true)
+                    ? $app->make(PricingSyncService::class)
+                    : null
+            );
         });
+        $this->app->singleton(CostCalculator::class);
+        $this->app->singleton(PromptLogger::class);
+        $this->app->singleton(PromptOptimizer::class);
+
+        // Bind main service via container
+        $this->app->singleton(AiGuardService::class);
+
+        // Facade alias
+        $this->app->alias(AiGuardService::class, 'ai-guard');
     }
 
     /**

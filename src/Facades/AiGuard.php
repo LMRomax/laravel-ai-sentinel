@@ -5,7 +5,7 @@ namespace Lmromax\LaravelAiGuard\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Lmromax\LaravelAiGuard\Models\AiPromptLog track(array $data)
+ * @method static \Lmromax\LaravelAiGuard\Models\AiPromptsLog track(array $data)
  * @method static array optimize(string $prompt)
  * @method static array getCostStats(string $period = 'day')
  * @method static float getTotalCost(string $period = 'month')

@@ -2,28 +2,23 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 use Lmromax\LaravelAiGuard\Services\PromptLogger;
 use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
 
 class AiGuardService
 {
-    protected PromptLogger $logger;
-    protected PromptOptimizer $optimizer;
-    protected CostCalculator $costCalculator;
-
-    public function __construct()
-    {
-        $this->logger = new PromptLogger();
-        $this->optimizer = new PromptOptimizer();
-        $this->costCalculator = new CostCalculator();
-    }
+    public function __construct(
+        protected PromptLogger $logger,
+        protected PromptOptimizer $optimizer,
+        protected CostCalculator $costCalculator
+    ) {}
 
     /**
      * Track an AI request
      */
-    public function track(array $data): AiPromptLog
+    public function track(array $data): AiPromptsLog
     {
         return $this->logger->log($data);
     }

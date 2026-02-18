@@ -2,7 +2,7 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
-use Lmromax\LaravelAiGuard\Models\AiPromptLog;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
 
 class PromptLogger
@@ -17,10 +17,10 @@ class PromptLogger
     /**
      * Log an AI prompt and response
      */
-    public function log(array $data): AiPromptLog
+    public function log(array $data): AiPromptsLog
     {
         if (!config('ai-guard.enabled', true)) {
-            return new AiPromptLog(); // Return empty model if disabled
+            return new AiPromptsLog(); // Return empty model if disabled
         }
 
         $cost = $this->costCalculator->calculate(
@@ -30,7 +30,7 @@ class PromptLogger
             $data['tokens_output'] ?? 0
         );
 
-        return AiPromptLog::create([
+        return AiPromptsLog::create([
             'provider' => $data['provider'],
             'model' => $data['model'],
             'prompt' => $data['prompt'] ?? '',
@@ -49,7 +49,7 @@ class PromptLogger
      */
     public function getStats(string $period = 'day'): array
     {
-        $query = AiPromptLog::query();
+        $query = AiPromptsLog::query();
 
         $dateRange = match ($period) {
             'day' => [now()->startOfDay(), now()->endOfDay()],

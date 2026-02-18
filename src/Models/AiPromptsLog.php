@@ -5,7 +5,7 @@ namespace Lmromax\LaravelAiGuard\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AiPromptLog extends Model
+class AiPromptsLog extends Model
 {
     protected $fillable = [
         'provider',
