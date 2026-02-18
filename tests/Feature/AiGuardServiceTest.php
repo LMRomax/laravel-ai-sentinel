@@ -2,9 +2,6 @@
 
 use Lmromax\LaravelAiGuard\Facades\AiGuard;
 use Lmromax\LaravelAiGuard\Models\AiPromptLog;
-use Lmromax\LaravelAiGuard\Tests\TestCase;
-
-uses(TestCase::class);
 
 beforeEach(function () {
     $this->artisan('migrate');

@@ -1,9 +1,6 @@
 <?php
 
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
-use Lmromax\LaravelAiGuard\Tests\TestCase;
-
-uses(TestCase::class);
 
 beforeEach(function () {
     $this->calculator = new CostCalculator();

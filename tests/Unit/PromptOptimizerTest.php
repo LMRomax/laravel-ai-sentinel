@@ -1,9 +1,6 @@
 <?php
 
 use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
-use Lmromax\LaravelAiGuard\Tests\TestCase;
-
-uses(TestCase::class);
 
 beforeEach(function () {
     $this->optimizer = new PromptOptimizer();

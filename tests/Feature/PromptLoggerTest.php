@@ -2,9 +2,6 @@
 
 use Lmromax\LaravelAiGuard\Models\AiPromptLog;
 use Lmromax\LaravelAiGuard\Services\PromptLogger;
-use Lmromax\LaravelAiGuard\Tests\TestCase;
-
-uses(TestCase::class);
 
 beforeEach(function () {
     $this->logger = new PromptLogger();

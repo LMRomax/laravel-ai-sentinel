@@ -1,9 +1,6 @@
 <?php
 
 use Lmromax\LaravelAiGuard\Services\PricingResolver;
-use Lmromax\LaravelAiGuard\Tests\TestCase;
-
-uses(TestCase::class);
 
 beforeEach(function () {
     $this->resolver = new PricingResolver();
