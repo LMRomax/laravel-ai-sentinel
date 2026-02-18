@@ -3,9 +3,6 @@
 namespace Lmromax\LaravelAiGuard\Services;
 
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Services\PromptLogger;
-use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
-use Lmromax\LaravelAiGuard\Services\CostCalculator;
 
 class AiGuardService
 {
@@ -45,6 +42,7 @@ class AiGuardService
     public function getTotalCost(string $period = 'month'): float
     {
         $stats = $this->getCostStats($period);
+
         return $stats['total_cost'] ?? 0.0;
     }
 

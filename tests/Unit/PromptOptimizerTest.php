@@ -3,7 +3,7 @@
 use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
 
 beforeEach(function () {
-    $this->optimizer = new PromptOptimizer();
+    $this->optimizer = new PromptOptimizer;
 });
 
 describe('PromptOptimizer', function () {

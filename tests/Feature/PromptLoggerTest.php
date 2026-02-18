@@ -4,7 +4,7 @@ use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 use Lmromax\LaravelAiGuard\Services\PromptLogger;
 
 beforeEach(function () {
-    $this->logger = new PromptLogger();
+    $this->logger = new PromptLogger;
 
     // Run migrations
     $this->artisan('migrate');
@@ -14,13 +14,13 @@ describe('PromptLogger', function () {
 
     it('logs an ai request to the database', function () {
         $this->logger->log([
-            'provider'       => 'openai',
-            'model'          => 'gpt-4o',
-            'prompt'         => 'Hello, world!',
-            'response'       => 'Hi there!',
-            'tokens_input'   => 100,
-            'tokens_output'  => 50,
-            'duration_ms'    => 800,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Hello, world!',
+            'response' => 'Hi there!',
+            'tokens_input' => 100,
+            'tokens_output' => 50,
+            'duration_ms' => 800,
         ]);
 
         expect(AiPromptsLog::count())->toBe(1);
@@ -35,10 +35,10 @@ describe('PromptLogger', function () {
 
     it('calculates cost when logging', function () {
         $this->logger->log([
-            'provider'      => 'openai',
-            'model'         => 'gpt-4o',
-            'prompt'        => 'Test',
-            'tokens_input'  => 1000,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Test',
+            'tokens_input' => 1000,
             'tokens_output' => 1000,
         ]);
 
@@ -52,10 +52,10 @@ describe('PromptLogger', function () {
         config(['ai-guard.enabled' => false]);
 
         $this->logger->log([
-            'provider'      => 'openai',
-            'model'         => 'gpt-4o',
-            'prompt'        => 'Test',
-            'tokens_input'  => 100,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Test',
+            'tokens_input' => 100,
             'tokens_output' => 50,
         ]);
 
@@ -66,10 +66,10 @@ describe('PromptLogger', function () {
         // Crée 3 logs
         for ($i = 0; $i < 3; $i++) {
             $this->logger->log([
-                'provider'      => 'openai',
-                'model'         => 'gpt-4o',
-                'prompt'        => 'Test ' . $i,
-                'tokens_input'  => 100,
+                'provider' => 'openai',
+                'model' => 'gpt-4o',
+                'prompt' => 'Test '.$i,
+                'tokens_input' => 100,
                 'tokens_output' => 50,
             ]);
         }
@@ -83,12 +83,12 @@ describe('PromptLogger', function () {
 
     it('stores metadata correctly', function () {
         $this->logger->log([
-            'provider'      => 'anthropic',
-            'model'         => 'claude-3-5-sonnet-20241022',
-            'prompt'        => 'Test',
-            'tokens_input'  => 100,
+            'provider' => 'anthropic',
+            'model' => 'claude-3-5-sonnet-20241022',
+            'prompt' => 'Test',
+            'tokens_input' => 100,
             'tokens_output' => 50,
-            'metadata'      => ['source' => 'test', 'tokens_saved' => 10],
+            'metadata' => ['source' => 'test', 'tokens_saved' => 10],
         ]);
 
         $log = AiPromptsLog::first();

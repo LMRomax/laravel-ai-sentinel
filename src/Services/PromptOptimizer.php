@@ -8,7 +8,7 @@ class PromptOptimizer
 
     public function __construct()
     {
-        $this->costCalculator = new CostCalculator();
+        $this->costCalculator = new CostCalculator;
     }
 
     /**
@@ -16,7 +16,7 @@ class PromptOptimizer
      */
     public function optimize(string $prompt): array
     {
-        if (!config('ai-guard.optimization.enabled', true)) {
+        if (! config('ai-guard.optimization.enabled', true)) {
             return [
                 'original' => $prompt,
                 'optimized' => $prompt,
@@ -49,7 +49,7 @@ class PromptOptimizer
      */
     protected function compress(string $text): string
     {
-        if (!config('ai-guard.optimization.enable_compression', true)) {
+        if (! config('ai-guard.optimization.enable_compression', true)) {
             return $text;
         }
 
@@ -89,6 +89,6 @@ class PromptOptimizer
         $ratio = $maxTokens / $estimatedTokens;
         $targetLength = (int) (strlen($context) * $ratio);
 
-        return substr($context, 0, $targetLength) . '...';
+        return substr($context, 0, $targetLength).'...';
     }
 }

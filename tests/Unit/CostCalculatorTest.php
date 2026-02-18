@@ -3,7 +3,7 @@
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
 
 beforeEach(function () {
-    $this->calculator = new CostCalculator();
+    $this->calculator = new CostCalculator;
 });
 
 describe('CostCalculator', function () {
@@ -50,7 +50,7 @@ describe('CostCalculator', function () {
 
     it('estimates more tokens for longer text', function () {
         $short = $this->calculator->estimateTokens('Hello');
-        $long  = $this->calculator->estimateTokens('Hello world, this is a much longer sentence with many words');
+        $long = $this->calculator->estimateTokens('Hello world, this is a much longer sentence with many words');
 
         expect($long)->toBeGreaterThan($short);
     });

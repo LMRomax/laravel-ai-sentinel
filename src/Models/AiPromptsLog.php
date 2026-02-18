@@ -33,7 +33,7 @@ class AiPromptsLog extends Model
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        
+
         $this->setTable(config('ai-guard.table_name', 'ai_prompt_logs'));
     }
 

@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Log;
 class PricingSyncService
 {
     protected string $pricingUrl;
+
     protected int $cacheTtl = 86400; // 24 heures
+
     protected string $cacheKey = 'ai_guard_pricing';
 
     public function __construct()
@@ -45,7 +47,7 @@ class PricingSyncService
     {
         $pricing = $this->getPricing();
 
-        if (!$pricing) {
+        if (! $pricing) {
             return null;
         }
 
@@ -78,10 +80,10 @@ class PricingSyncService
         $pricing = $this->getPricing();
 
         return [
-            'is_cached'    => $this->isCached(),
+            'is_cached' => $this->isCached(),
             'last_updated' => $pricing['last_updated'] ?? null,
-            'version'      => $pricing['version'] ?? null,
-            'source_url'   => $this->pricingUrl,
+            'version' => $pricing['version'] ?? null,
+            'source_url' => $this->pricingUrl,
         ];
     }
 
@@ -99,14 +101,15 @@ class PricingSyncService
                 $data = $response->json();
 
                 // Validation basique du JSON
-                if (!isset($data['providers'])) {
+                if (! isset($data['providers'])) {
                     Log::warning('AI Guard: Invalid pricing JSON structure');
+
                     return null;
                 }
 
                 Log::info('AI Guard: Pricing synced successfully', [
                     'last_updated' => $data['last_updated'] ?? 'unknown',
-                    'version'      => $data['version'] ?? 'unknown',
+                    'version' => $data['version'] ?? 'unknown',
                 ]);
 
                 return $data;
@@ -114,14 +117,14 @@ class PricingSyncService
 
             Log::warning('AI Guard: Failed to fetch pricing', [
                 'status' => $response->status(),
-                'url'    => $this->pricingUrl,
+                'url' => $this->pricingUrl,
             ]);
 
             return null;
         } catch (\Exception $e) {
             Log::warning('AI Guard: Exception while fetching pricing', [
                 'error' => $e->getMessage(),
-                'url'   => $this->pricingUrl,
+                'url' => $this->pricingUrl,
             ]);
 
             return null;

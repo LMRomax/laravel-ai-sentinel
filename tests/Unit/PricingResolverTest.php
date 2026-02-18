@@ -3,7 +3,7 @@
 use Lmromax\LaravelAiGuard\Services\PricingResolver;
 
 beforeEach(function () {
-    $this->resolver = new PricingResolver();
+    $this->resolver = new PricingResolver;
 });
 
 describe('PricingResolver', function () {
@@ -36,7 +36,7 @@ describe('PricingResolver', function () {
         config(['ai-guard.custom_models' => [
             'my-provider' => [
                 'my-model' => [
-                    'input'  => 0.05,
+                    'input' => 0.05,
                     'output' => 0.10,
                 ],
             ],
@@ -51,7 +51,7 @@ describe('PricingResolver', function () {
     it('throws exception when strategy is fail', function () {
         config(['ai-guard.unknown_model_strategy' => 'fail']);
 
-        expect(fn() => $this->resolver->resolve('unknown', 'unknown-model'))
+        expect(fn () => $this->resolver->resolve('unknown', 'unknown-model'))
             ->toThrow(\RuntimeException::class);
     });
 

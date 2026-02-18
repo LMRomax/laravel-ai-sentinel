@@ -3,7 +3,6 @@
 namespace Lmromax\LaravelAiGuard\Services;
 
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Services\CostCalculator;
 
 class PromptLogger
 {
@@ -11,7 +10,7 @@ class PromptLogger
 
     public function __construct()
     {
-        $this->costCalculator = new CostCalculator();
+        $this->costCalculator = new CostCalculator;
     }
 
     /**
@@ -19,8 +18,8 @@ class PromptLogger
      */
     public function log(array $data): AiPromptsLog
     {
-        if (!config('ai-guard.enabled', true)) {
-            return new AiPromptsLog(); // Return empty model if disabled
+        if (! config('ai-guard.enabled', true)) {
+            return new AiPromptsLog; // Return empty model if disabled
         }
 
         $cost = $this->costCalculator->calculate(
@@ -83,10 +82,10 @@ class PromptLogger
             SUM(cost) as total_cost,
             AVG(cost) as avg_cost
         ')
-        ->groupBy('provider')
-        ->get()
-        ->keyBy('provider')
-        ->toArray();
+            ->groupBy('provider')
+            ->get()
+            ->keyBy('provider')
+            ->toArray();
     }
 
     /**
@@ -100,9 +99,9 @@ class PromptLogger
             SUM(cost) as total_cost,
             AVG(cost) as avg_cost
         ')
-        ->groupBy('model')
-        ->get()
-        ->keyBy('model')
-        ->toArray();
+            ->groupBy('model')
+            ->get()
+            ->keyBy('model')
+            ->toArray();
     }
 }

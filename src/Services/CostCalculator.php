@@ -8,7 +8,7 @@ class CostCalculator
 
     public function __construct()
     {
-        $this->pricingResolver = new PricingResolver();
+        $this->pricingResolver = new PricingResolver;
     }
 
     /**
@@ -37,6 +37,7 @@ class CostCalculator
     {
         // More accurate: count words and multiply by 1.3
         $wordCount = str_word_count($text);
+
         return (int) ceil($wordCount * 1.3);
     }
 

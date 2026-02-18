@@ -6,9 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lmromax\LaravelAiGuard\Console\Commands\SyncPricingCommand;
 use Lmromax\LaravelAiGuard\Services\AiGuardService;
-use Lmromax\LaravelAiGuard\Services\PricingSyncService;
-use Lmromax\LaravelAiGuard\Services\PricingResolver;
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
+use Lmromax\LaravelAiGuard\Services\PricingResolver;
+use Lmromax\LaravelAiGuard\Services\PricingSyncService;
 use Lmromax\LaravelAiGuard\Services\PromptLogger;
 use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
 
@@ -20,7 +20,7 @@ class AiGuardServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/ai-guard.php',
+            __DIR__.'/../config/ai-guard.php',
             'ai-guard'
         );
 
@@ -51,25 +51,25 @@ class AiGuardServiceProvider extends ServiceProvider
     {
         // Publish config
         $this->publishes([
-            __DIR__ . '/../config/ai-guard.php' => config_path('ai-guard.php'),
+            __DIR__.'/../config/ai-guard.php' => config_path('ai-guard.php'),
         ], 'ai-guard-config');
 
         // Publish & load migrations
         $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+            __DIR__.'/../database/migrations/' => database_path('migrations'),
         ], 'ai-guard-migrations');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Load & publish views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'ai-guard');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ai-guard');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/ai-guard'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/ai-guard'),
         ], 'ai-guard-views');
 
         // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         // Register Livewire components
         if (class_exists(Livewire::class)) {

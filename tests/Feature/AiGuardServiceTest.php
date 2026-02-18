@@ -11,11 +11,11 @@ describe('AiGuard Facade', function () {
 
     it('tracks a request via facade', function () {
         AiGuard::track([
-            'provider'      => 'openai',
-            'model'         => 'gpt-4o',
-            'prompt'        => 'Hello!',
-            'response'      => 'Hi!',
-            'tokens_input'  => 100,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Hello!',
+            'response' => 'Hi!',
+            'tokens_input' => 100,
             'tokens_output' => 50,
         ]);
 
@@ -47,10 +47,10 @@ describe('AiGuard Facade', function () {
 
     it('returns cost stats via facade', function () {
         AiGuard::track([
-            'provider'      => 'openai',
-            'model'         => 'gpt-4o',
-            'prompt'        => 'Test',
-            'tokens_input'  => 500,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Test',
+            'tokens_input' => 500,
             'tokens_output' => 300,
         ]);
 
@@ -71,10 +71,10 @@ describe('AiGuard Facade', function () {
 
     it('returns total cost via facade', function () {
         AiGuard::track([
-            'provider'      => 'openai',
-            'model'         => 'gpt-4o',
-            'prompt'        => 'Test',
-            'tokens_input'  => 1000,
+            'provider' => 'openai',
+            'model' => 'gpt-4o',
+            'prompt' => 'Test',
+            'tokens_input' => 1000,
             'tokens_output' => 1000,
         ]);
 

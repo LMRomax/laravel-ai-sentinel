@@ -71,7 +71,7 @@ return [
     'unknown_model_strategy' => env('AI_GUARD_UNKNOWN_MODEL_STRATEGY', 'use_default'),
 
     'default_pricing' => [
-        'input'  => 0.001, // $1.00 per 1M tokens
+        'input' => 0.001, // $1.00 per 1M tokens
         'output' => 0.003, // $3.00 per 1M tokens
     ],
 
@@ -102,9 +102,9 @@ return [
     |
     */
     'alerts' => [
-        'enabled'               => env('AI_GUARD_ALERTS_ENABLED', true),
-        'daily_limit'           => env('AI_GUARD_DAILY_LIMIT', 100),
-        'monthly_limit'         => env('AI_GUARD_MONTHLY_LIMIT', 1000),
+        'enabled' => env('AI_GUARD_ALERTS_ENABLED', true),
+        'daily_limit' => env('AI_GUARD_DAILY_LIMIT', 100),
+        'monthly_limit' => env('AI_GUARD_MONTHLY_LIMIT', 1000),
         'notification_channels' => ['mail'],
     ],
 
@@ -117,11 +117,11 @@ return [
     |
     */
     'optimization' => [
-        'enabled'            => env('AI_GUARD_OPTIMIZATION_ENABLED', true),
+        'enabled' => env('AI_GUARD_OPTIMIZATION_ENABLED', true),
         'max_context_tokens' => 4000,
         'enable_compression' => true,
-        'cache_responses'    => true,
-        'cache_ttl'          => 3600, // seconds (1 hour)
+        'cache_responses' => true,
+        'cache_ttl' => 3600, // seconds (1 hour)
     ],
 
     /*

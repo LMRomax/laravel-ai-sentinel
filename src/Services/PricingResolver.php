@@ -108,7 +108,7 @@ class PricingResolver
     protected function throwUnknownModelException(string $provider, string $model): never
     {
         throw new \RuntimeException(
-            "AI Guard: Unknown model [{$provider}/{$model}]. " .
+            "AI Guard: Unknown model [{$provider}/{$model}]. ".
                 "Add it to 'custom_models' in config/ai-guard.php or change 'unknown_model_strategy'."
         );
     }

@@ -28,7 +28,7 @@ class SyncPricingCommand extends Command
         }
 
         // Echec de la sync
-        if (!$pricing) {
+        if (! $pricing) {
             $this->error('');
             $this->error('❌ Failed to fetch pricing data.');
             $this->error('   Check your internet connection or pricing_source_url in config/ai-guard.php');
@@ -40,9 +40,9 @@ class SyncPricingCommand extends Command
         // Succès
         $this->info('');
         $this->info('✅ Pricing synced successfully!');
-        $this->info('   Last updated : ' . ($pricing['last_updated'] ?? 'unknown'));
-        $this->info('   Version      : ' . ($pricing['version'] ?? 'unknown'));
-        $this->info('   Source       : ' . config('ai-guard.pricing_source_url'));
+        $this->info('   Last updated : '.($pricing['last_updated'] ?? 'unknown'));
+        $this->info('   Version      : '.($pricing['version'] ?? 'unknown'));
+        $this->info('   Source       : '.config('ai-guard.pricing_source_url'));
         $this->info('');
 
         // Tableau des providers
@@ -53,7 +53,7 @@ class SyncPricingCommand extends Command
             collect($providers)->map(function ($models, $provider) {
                 return [
                     $provider,
-                    count($models) . ' model(s)',
+                    count($models).' model(s)',
                 ];
             })->values()->toArray()
         );

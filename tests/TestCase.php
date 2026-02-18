@@ -2,8 +2,8 @@
 
 namespace Lmromax\LaravelAiGuard\Tests;
 
-use Lmromax\LaravelAiGuard\AiGuardServiceProvider;
 use Livewire\LivewireServiceProvider;
+use Lmromax\LaravelAiGuard\AiGuardServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -26,9 +26,9 @@ class TestCase extends Orchestra
         // Setup database
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
 
         // Setup ai-guard config
@@ -39,16 +39,16 @@ class TestCase extends Orchestra
 
         $app['config']->set('ai-guard.table_name', 'ai_prompt_logs');
         $app['config']->set('ai-guard.default_pricing', [
-            'input'  => 0.001,
+            'input' => 0.001,
             'output' => 0.003,
         ]);
         $app['config']->set('ai-guard.unknown_model_strategy', 'use_default');
         $app['config']->set('ai-guard.optimization', [
-            'enabled'            => true,
+            'enabled' => true,
             'max_context_tokens' => 4000,
             'enable_compression' => true,
-            'cache_responses'    => false,
-            'cache_ttl'          => 3600,
+            'cache_responses' => false,
+            'cache_ttl' => 3600,
         ]);
         $app['config']->set('ai-guard.custom_models', []);
 
@@ -57,11 +57,11 @@ class TestCase extends Orchestra
             'openai' => [
                 'models' => [
                     'gpt-4o' => [
-                        'input'  => 0.0025,
+                        'input' => 0.0025,
                         'output' => 0.01,
                     ],
                     'gpt-4o-mini' => [
-                        'input'  => 0.00015,
+                        'input' => 0.00015,
                         'output' => 0.0006,
                     ],
                 ],
@@ -69,7 +69,7 @@ class TestCase extends Orchestra
             'anthropic' => [
                 'models' => [
                     'claude-3-5-sonnet-20241022' => [
-                        'input'  => 0.003,
+                        'input' => 0.003,
                         'output' => 0.015,
                     ],
                 ],

@@ -8,8 +8,11 @@ use Lmromax\LaravelAiGuard\Facades\AiGuard;
 class StatsCards extends Component
 {
     public $todayCost;
+
     public $todayRequests;
+
     public $monthCost;
+
     public $monthRequests;
 
     public function mount()
