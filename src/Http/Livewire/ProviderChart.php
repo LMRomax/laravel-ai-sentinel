@@ -30,13 +30,13 @@ class ProviderChart extends Component
         $labels = [];
         $costs = [];
         $colors = [
-            'openai'    => 'rgb(16, 185, 129)',
+            'openai' => 'rgb(16, 185, 129)',
             'anthropic' => 'rgb(139, 92, 246)',
-            'groq'      => 'rgb(249, 115, 22)',
-            'google'    => 'rgb(59, 130, 246)',
-            'mistral'   => 'rgb(236, 72, 153)',
-            'deepseek'  => 'rgb(234, 179, 8)',
-            'xai'       => 'rgb(239, 68, 68)',
+            'groq' => 'rgb(249, 115, 22)',
+            'google' => 'rgb(59, 130, 246)',
+            'mistral' => 'rgb(236, 72, 153)',
+            'deepseek' => 'rgb(234, 179, 8)',
+            'xai' => 'rgb(239, 68, 68)',
         ];
 
         $backgroundColors = [];

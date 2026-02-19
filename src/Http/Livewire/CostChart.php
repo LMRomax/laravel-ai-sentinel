@@ -2,9 +2,9 @@
 
 namespace Lmromax\LaravelAiGuard\Http\Livewire;
 
+use Carbon\Carbon;
 use Livewire\Component;
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Carbon\Carbon;
 
 class CostChart extends Component
 {
