@@ -60,7 +60,7 @@
                 <p class="text-sm font-medium text-gray-600">Monthly Limit</p>
                 @php
                     $limit = config('ai-guard.alerts.monthly_limit', 1000);
-                    $percentage = ($monthCost / $limit) * 100;
+                    $percentage = ($monthCostRaw / $limit) * 100; // ← Utilise monthCostRaw
                 @endphp
                 <p class="text-3xl font-bold text-gray-900 mt-2">{{ number_format($percentage, 0) }}%</p>
             </div>
@@ -74,5 +74,4 @@
         </div>
         <p class="text-sm text-gray-500 mt-4">${{ $monthCost }} / ${{ $limit }}</p>
     </div>
-
 </div>

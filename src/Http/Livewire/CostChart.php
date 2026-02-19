@@ -4,6 +4,7 @@ namespace Lmromax\LaravelAiGuard\Http\Livewire;
 
 use Livewire\Component;
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Carbon\Carbon;
 
 class CostChart extends Component
 {
@@ -16,12 +17,17 @@ class CostChart extends Component
 
     public function loadChartData()
     {
-        // Get last 7 days of data
-        $data = AiPromptsLog::selectRaw('DATE(created_at) as date, SUM(cost) as total_cost')
-            ->where('created_at', '>=', now()->subDays(7))
-            ->groupBy('date')
-            ->orderBy('date')
+        // Get all logs from last 7 days
+        $logs = AiPromptsLog::where('created_at', '>=', now()->subDays(7))
+            ->orderBy('created_at')
             ->get();
+
+        // Group by date in PHP (database-agnostic)
+        $costsByDate = $logs->groupBy(function ($log) {
+            return Carbon::parse($log->created_at)->format('Y-m-d');
+        })->map(function ($dayLogs) {
+            return $dayLogs->sum('cost');
+        });
 
         $labels = [];
         $costs = [];
@@ -30,9 +36,7 @@ class CostChart extends Component
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->format('Y-m-d');
             $labels[] = now()->subDays($i)->format('M d');
-
-            $dayData = $data->firstWhere('date', $date);
-            $costs[] = $dayData ? (float) $dayData->total_cost : 0;
+            $costs[] = (float) ($costsByDate[$date] ?? 0);
         }
 
         $this->chartData = [
