@@ -8,11 +8,11 @@ trait TracksAiRequests
 {
     /**
      * Make an AI request with automatic tracking and optimization
-     * 
-     * @param string $provider The AI provider name (e.g. 'openai')
-     * @param string $model The AI model name (e.g. 'gpt-4o')
-     * @param string $prompt The prompt to send to the AI
-     * @param array $options Additional options for the AI call (e.g. max_tokens, temperature)
+     *
+     * @param  string  $provider  The AI provider name (e.g. 'openai')
+     * @param  string  $model  The AI model name (e.g. 'gpt-4o')
+     * @param  string  $prompt  The prompt to send to the AI
+     * @param  array  $options  Additional options for the AI call (e.g. max_tokens, temperature)
      * @return array The response from the AI provider
      */
     protected function aiRequest(string $provider, string $model, string $prompt, array $options = []): array

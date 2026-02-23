@@ -2,17 +2,17 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
 use Illuminate\Support\Str;
+use Lmromax\LaravelAiGuard\Facades\AiGuard;
 
 class AiRequestService
 {
     /**
      * Main universal request handler
-     * 
-     * @param string $model The model name (e.g. 'gpt-4o')
-     * @param string $prompt The input prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name (e.g. 'gpt-4o')
+     * @param  string  $prompt  The input prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array An array containing 'content', 'usage', and 'raw' response data
      */
     public function request(string $model, string $prompt, array $options = []): array
@@ -20,21 +20,21 @@ class AiRequestService
         $provider = $this->detectProvider($model);
 
         return match ($provider) {
-            'openai'    => $this->openai($model, $prompt, $options),
+            'openai' => $this->openai($model, $prompt, $options),
             'anthropic' => $this->anthropic($model, $prompt, $options),
-            'groq'      => $this->groq($model, $prompt, $options),
-            'google'    => $this->google($model, $prompt, $options),
-            'mistral'   => $this->mistral($model, $prompt, $options),
-            'deepseek'  => $this->deepseek($model, $prompt, $options),
-            'xai'       => $this->xai($model, $prompt, $options),
-            default     => throw new \Exception("Unknown provider for model: $model"),
+            'groq' => $this->groq($model, $prompt, $options),
+            'google' => $this->google($model, $prompt, $options),
+            'mistral' => $this->mistral($model, $prompt, $options),
+            'deepseek' => $this->deepseek($model, $prompt, $options),
+            'xai' => $this->xai($model, $prompt, $options),
+            default => throw new \Exception("Unknown provider for model: $model"),
         };
     }
 
     /**
      * Auto-detect provider using model prefixes
-     * 
-     * @param string $model The model name to detect provider for
+     *
+     * @param  string  $model  The model name to detect provider for
      * @return string The detected provider name (e.g. 'openai', 'anthropic', 'groq', 'google', 'mistral', 'deepseek', 'xai')
      */
     protected function detectProvider(string $model): string
@@ -42,30 +42,30 @@ class AiRequestService
         $model = strtolower($model);
 
         return match (true) {
-            Str::startsWith($model, ['gpt-', 'o1', 'o3'])                 => 'openai',
-            Str::contains($model, 'claude')                               => 'anthropic',
-            Str::startsWith($model, ['llama', 'mixtral', 'gemma'])        => 'groq',
-            Str::startsWith($model, 'gemini')                             => 'google',
-            Str::startsWith($model, 'mistral')                            => 'mistral',
-            Str::startsWith($model, 'deepseek')                           => 'deepseek',
-            Str::startsWith($model, 'grok')                               => 'xai',
-            default                                                       => 'openai',
+            Str::startsWith($model, ['gpt-', 'o1', 'o3']) => 'openai',
+            Str::contains($model, 'claude') => 'anthropic',
+            Str::startsWith($model, ['llama', 'mixtral', 'gemma']) => 'groq',
+            Str::startsWith($model, 'gemini') => 'google',
+            Str::startsWith($model, 'mistral') => 'mistral',
+            Str::startsWith($model, 'deepseek') => 'deepseek',
+            Str::startsWith($model, 'grok') => 'xai',
+            default => 'openai',
         };
     }
 
     /**
      * Optimize + Track wrapper
-     * 
+     *
      * This method handles the full lifecycle of an AI request, including:
      * - Prompt optimization using AiGuard::optimize()
      * - Sending the request to the appropriate provider method
      * - Tracking the request and response using AiGuard::track()
-     * 
-     * @param string $provider The provider name (e.g. 'openai')
-     * @param string $model The model name (e.g. 'gpt-4o')
-     * @param string $prompt The original prompt to send
-     * @param callable $fn The function to execute the provider request
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $provider  The provider name (e.g. 'openai')
+     * @param  string  $model  The model name (e.g. 'gpt-4o')
+     * @param  string  $prompt  The original prompt to send
+     * @param  callable  $fn  The function to execute the provider request
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The response from the provider method
      */
     protected function process(string $provider, string $model, string $prompt, callable $fn, array $options): array
@@ -80,7 +80,7 @@ class AiRequestService
         $response = $fn($model, $finalPrompt, $options);
 
         // Compute duration
-        $duration = (int)((microtime(true) - $start) * 1000);
+        $duration = (int) ((microtime(true) - $start) * 1000);
 
         // Track
         AiGuard::track([
@@ -102,15 +102,15 @@ class AiRequestService
 
     /**
      * Provider-specific request methods
-     * 
+     *
      * Each method sends a request to the corresponding provider's API and returns a standardized response array containing:
      * - 'content': The generated text content from the model
      * - 'usage': An array with 'input' and 'output' token counts
      * - 'raw': The raw response object from the provider's SDK for debugging purposes
-     * 
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function openai(string $model, string $prompt, array $options = [])
@@ -135,11 +135,12 @@ class AiRequestService
     /**
      * Other provider methods (anthropic, groq, google, mistral, deepseek, xai) are defined similarly to the openai method, each using their respective SDKs and response structures.
      * For brevity, they are not repeated here but follow the same pattern of calling $fn with the appropriate parameters and returning a standardized response array.
-     * 
+     *
      * @see openai() for the structure and implementation details of each provider method.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function anthropic(string $model, string $prompt, array $options = [])
@@ -165,11 +166,12 @@ class AiRequestService
     /**
      * The groq, google, mistral, deepseek, and xai methods are implemented similarly to the openai and anthropic methods, each tailored to the specific SDK and response format of the provider.
      * Each method uses the process() wrapper to handle optimization, tracking, and standardized response formatting.
-     * 
+     *
      * @see openai() and anthropic() for examples of how each provider method is structured and implemented.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function groq(string $model, string $prompt, array $options = [])
@@ -194,11 +196,12 @@ class AiRequestService
     /**
      * The groq, google, mistral, deepseek, and xai methods are implemented similarly to the openai and anthropic methods, each tailored to the specific SDK and response format of the provider.
      * Each method uses the process() wrapper to handle optimization, tracking, and standardized response formatting.
-     * 
+     *
      * @see openai() and anthropic() for examples of how each provider method is structured and implemented.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function google(string $model, string $prompt, array $options = [])
@@ -220,11 +223,12 @@ class AiRequestService
     /**
      * The groq, google, mistral, deepseek, and xai methods are implemented similarly to the openai and anthropic methods, each tailored to the specific SDK and response format of the provider.
      * Each method uses the process() wrapper to handle optimization, tracking, and standardized response formatting.
-     * 
+     *
      * @see openai() and anthropic() for examples of how each provider method is structured and implemented.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function mistral(string $model, string $prompt, array $options = [])
@@ -249,11 +253,12 @@ class AiRequestService
     /**
      * The groq, google, mistral, deepseek, and xai methods are implemented similarly to the openai and anthropic methods, each tailored to the specific SDK and response format of the provider.
      * Each method uses the process() wrapper to handle optimization, tracking, and standardized response formatting.
-     * 
+     *
      * @see openai() and anthropic() for examples of how each provider method is structured and implemented.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function deepseek(string $model, string $prompt, array $options = [])
@@ -278,11 +283,12 @@ class AiRequestService
     /**
      * The groq, google, mistral, deepseek, and xai methods are implemented similarly to the openai and anthropic methods, each tailored to the specific SDK and response format of the provider.
      * Each method uses the process() wrapper to handle optimization, tracking, and standardized response formatting.
-     * 
+     *
      * @see openai() and anthropic() for examples of how each provider method is structured and implemented.
-     * @param string $model The model name to use for the request
-     * @param string $prompt The prompt to send to the model
-     * @param array $options Additional options to pass to the provider's API
+     *
+     * @param  string  $model  The model name to use for the request
+     * @param  string  $prompt  The prompt to send to the model
+     * @param  array  $options  Additional options to pass to the provider's API
      * @return array The standardized response array from the provider method
      */
     public function xai(string $model, string $prompt, array $options = [])

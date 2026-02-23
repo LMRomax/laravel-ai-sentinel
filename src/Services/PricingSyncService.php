@@ -24,7 +24,7 @@ class PricingSyncService
 
     /**
      * Get pricing data (from cache or remote)
-     * 
+     *
      * @return array|null The pricing data array or null if it cannot be fetched
      */
     public function getPricing(): ?array
@@ -44,9 +44,9 @@ class PricingSyncService
 
     /**
      * Get pricing for a specific provider/model
-     * 
-     * @param string $provider The provider name (e.g. 'openai')
-     * @param string $model The model name (e.g. 'gpt-4o')
+     *
+     * @param  string  $provider  The provider name (e.g. 'openai')
+     * @param  string  $model  The model name (e.g. 'gpt-4o')
      * @return array|null An array with 'input' and 'output' pricing or null if not found
      */
     public function getModelPricing(string $provider, string $model): ?array
@@ -62,7 +62,7 @@ class PricingSyncService
 
     /**
      * Force refresh the cache
-     * 
+     *
      * @return array|null The new pricing data or null if it cannot be fetched
      */
     public function refresh(): ?array
@@ -74,7 +74,7 @@ class PricingSyncService
 
     /**
      * Check if pricing cache exists
-     * 
+     *
      * @return bool True if cache exists, false otherwise
      */
     public function isCached(): bool
@@ -84,7 +84,7 @@ class PricingSyncService
 
     /**
      * Get cache metadata
-     * 
+     *
      * @return array An array containing is_cached, last_updated, version, and source_url
      */
     public function getCacheInfo(): array
@@ -101,7 +101,7 @@ class PricingSyncService
 
     /**
      * Fetch pricing from remote source
-     * 
+     *
      * @return array|null The pricing data array or null if it cannot be fetched or is invalid
      */
     protected function fetchRemote(): ?array

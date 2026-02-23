@@ -13,8 +13,8 @@ class AiPromptsLogObserver
 
     /**
      * Handle the AiPromptsLog "created" event.
-     * 
-     * @param AiPromptsLog $AiPromptsLog The log entry that was created
+     *
+     * @param  AiPromptsLog  $AiPromptsLog  The log entry that was created
      */
     public function created(AiPromptsLog $AiPromptsLog): void
     {

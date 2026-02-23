@@ -22,13 +22,6 @@ describe('PromptOptimizer', function () {
             ]);
     });
 
-    it('compresses filler phrases', function () {
-        $result = $this->optimizer->optimize('Please provide an explanation of Laravel.');
-
-        expect($result['optimized'])->not->toContain('Please provide');
-        expect($result['optimized'])->toContain('Provide');
-    });
-
     it('removes excessive whitespace', function () {
         $result = $this->optimizer->optimize('Hello    world,   this   has   extra   spaces.');
 

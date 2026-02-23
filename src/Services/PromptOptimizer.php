@@ -13,8 +13,8 @@ class PromptOptimizer
 
     /**
      * Optimize a prompt to reduce token usage
-     * 
-     * @param string $prompt The original prompt to optimize
+     *
+     * @param  string  $prompt  The original prompt to optimize
      * @return array An array containing original, optimized, tokens saved, and compression ratio
      */
     public function optimize(string $prompt): array
@@ -49,8 +49,8 @@ class PromptOptimizer
 
     /**
      * Compress text to reduce tokens
-     * 
-     * @param string $text The input text to compress
+     *
+     * @param  string  $text  The input text to compress
      * @return string The compressed text
      */
     protected function compress(string $text): string
@@ -86,7 +86,7 @@ class PromptOptimizer
         if (empty($candidates)) {
             $mainTopic = mb_strtolower($sentences[0], 'UTF-8');
         } else {
-            usort($candidates, fn($a, $b) => mb_strlen($b) <=> mb_strlen($a));
+            usort($candidates, fn ($a, $b) => mb_strlen($b) <=> mb_strlen($a));
             $mainTopic = mb_strtolower(trim($candidates[0]), 'UTF-8');
         }
 
@@ -97,14 +97,16 @@ class PromptOptimizer
 
         foreach ($sentences as $index => $sentence) {
             $s = trim($sentence);
-            if ($s === '') continue;
+            if ($s === '') {
+                continue;
+            }
 
             $sLower = mb_strtolower($s, 'UTF-8');
 
             $topicBoost = str_contains($sLower, $mainTopic) ? 2.5 : 0;
 
-            $words   = preg_split('/\s+/u', $sLower);
-            $unique  = array_unique($words);
+            $words = preg_split('/\s+/u', $sLower);
+            $unique = array_unique($words);
             $density = count($unique) / max(count($words), 1);
 
             $lenScore = min(mb_strlen($s, 'UTF-8') / 300, 0.2);
@@ -113,22 +115,22 @@ class PromptOptimizer
             $totalScore = $density + $lenScore + $topicBoost + $posBoost;
 
             $scored[] = [
-                'index'    => $index,
+                'index' => $index,
                 'sentence' => $s,
-                'score'    => $totalScore,
+                'score' => $totalScore,
             ];
         }
 
         // -------------------------------
         // 4) Sélection des phrases importantes
         // -------------------------------
-        usort($scored, fn($a, $b) => $b['score'] <=> $a['score']);
+        usort($scored, fn ($a, $b) => $b['score'] <=> $a['score']);
 
         // Nombre de phrases gardées : 2 ou 3 max
         $top = array_slice($scored, 0, 3);
-        usort($top, fn($a, $b) => $a['index'] <=> $b['index']);
+        usort($top, fn ($a, $b) => $a['index'] <=> $b['index']);
 
-        $summary = implode(' ', array_map(fn($s) => $s['sentence'], $top));
+        $summary = implode(' ', array_map(fn ($s) => $s['sentence'], $top));
 
         // -------------------------------
         // 5) Nettoyage final orienté "prompt"
@@ -165,8 +167,8 @@ class PromptOptimizer
      * Post-process the optimized prompt to further reduce tokens by removing common fillers, greetings, and apologies.
      * This is a more aggressive cleanup step that can be applied after the main optimization to squeeze out
      * any remaining fluff that doesn't add value to the prompt. It targets common patterns in both English and French.
-     * 
-     * @param string $text The input text to post-process
+     *
+     * @param  string  $text  The input text to post-process
      * @return string The post-processed text with reduced tokens
      */
     protected function postProcessPrompt(string $text): string
@@ -194,7 +196,7 @@ class PromptOptimizer
         //    (explain / show / describe / help / explique / montre / décris / aide...)
         if (preg_match(
             '/\b(explain|show|describe|help|teach|guide|'
-                . 'explique(?:r)?|montre(?:r)?|décris|aide(?:r)?)\b/iu',
+                .'explique(?:r)?|montre(?:r)?|décris|aide(?:r)?)\b/iu',
             $text,
             $m,
             PREG_OFFSET_CAPTURE
@@ -205,7 +207,7 @@ class PromptOptimizer
         // 4) Nettoyage des fillers classiques (en / fr)
         $text = preg_replace(
             '/\b(really|actually|basically|maybe|kind of|sort of|like|'
-                . 'franchement|vraiment|un peu|genre|en fait)\b[, ]*/iu',
+                .'franchement|vraiment|un peu|genre|en fait)\b[, ]*/iu',
             ' ',
             $text
         );
@@ -223,9 +225,9 @@ class PromptOptimizer
 
     /**
      * Truncate context to fit within token limit
-     * 
-     * @param string $context The input context to truncate
-     * @param int|null $maxTokens Optional max tokens to fit within (defaults to config value)
+     *
+     * @param  string  $context  The input context to truncate
+     * @param  int|null  $maxTokens  Optional max tokens to fit within (defaults to config value)
      * @return string The truncated context
      */
     public function truncateContext(string $context, ?int $maxTokens = null): string
@@ -242,6 +244,6 @@ class PromptOptimizer
         $ratio = $maxTokens / $estimatedTokens;
         $targetLength = (int) (strlen($context) * $ratio);
 
-        return substr($context, 0, $targetLength) . '...';
+        return substr($context, 0, $targetLength).'...';
     }
 }
