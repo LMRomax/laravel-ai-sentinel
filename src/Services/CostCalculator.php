@@ -13,6 +13,12 @@ class CostCalculator
 
     /**
      * Calculate cost based on token usage
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @param int $tokensInput The number of input tokens
+     * @param int $tokensOutput The number of output tokens
+     * @return float The calculated cost in dollars
      */
     public function calculate(
         string $provider,
@@ -32,6 +38,9 @@ class CostCalculator
     /**
      * Estimate tokens from text (rough approximation)
      * Rule of thumb: 1 token ≈ 4 characters for English
+     * 
+     * @param string $text The input text to estimate tokens for
+     * @return int The estimated number of tokens
      */
     public function estimateTokens(string $text): int
     {
@@ -43,6 +52,10 @@ class CostCalculator
 
     /**
      * Get pricing for a specific model
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @return array An array with 'input' and 'output' pricing
      */
     public function getPricing(string $provider, string $model): array
     {

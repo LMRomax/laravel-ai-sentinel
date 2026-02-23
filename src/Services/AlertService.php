@@ -69,6 +69,8 @@ class AlertService
 
     /**
      * Send alert notification
+     * 
+     * @param \Illuminate\Notifications\Notification $notification The notification instance to send
      */
     protected function sendAlert($notification): void
     {
@@ -86,6 +88,8 @@ class AlertService
 
     /**
      * Get default notification recipients
+     * 
+     * @return array An array of email addresses to receive alerts
      */
     protected function getDefaultRecipients(): array
     {
@@ -103,6 +107,9 @@ class AlertService
 
     /**
      * Check if daily alert was already sent today
+     * 
+     * @param string $type The alert type (e.g. 'daily' or 'monthly')
+     * @return bool True if alert was already sent today, false otherwise
      */
     protected function wasNotifiedToday(string $type): bool
     {
@@ -111,6 +118,8 @@ class AlertService
 
     /**
      * Check if monthly alert was already sent this month
+     * 
+     * @return bool True if alert was already sent this month, false otherwise
      */
     protected function wasNotifiedThisMonth(): bool
     {
@@ -119,6 +128,8 @@ class AlertService
 
     /**
      * Mark alert as sent
+     * 
+     * @param string $type The alert type (e.g. 'daily' or 'monthly')
      */
     protected function markAsNotified(string $type): void
     {

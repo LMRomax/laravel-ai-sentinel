@@ -20,10 +20,14 @@ class PricingResolver
      * 1. Remote JSON (GitHub) via cache
      * 2. Custom models defined by user in config
      * 3. Default pricing fallback
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @return array An array with 'input' and 'output' pricing
      */
     public function resolve(string $provider, string $model): array
     {
-        // 1. Remote JSON via cache
+        // Remote JSON via cache
         if ($this->syncService) {
             $remotePricing = $this->syncService->getModelPricing($provider, $model);
 
@@ -40,14 +44,14 @@ class PricingResolver
             return $configPricing;
         }
 
-        // 2. Custom models définis par l'utilisateur
+        // Custom models définis par l'utilisateur
         $customPricing = config("ai-guard.custom_models.{$provider}.{$model}");
 
         if ($customPricing) {
             return $customPricing;
         }
 
-        // 3. Stratégie de fallback
+        // Stratégie de fallback
         $strategy = config('ai-guard.unknown_model_strategy', 'use_default');
 
         if ($strategy === 'estimate') {
@@ -63,6 +67,10 @@ class PricingResolver
 
     /**
      * Estimate pricing based on model name patterns
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @return array An array with 'input' and 'output' pricing estimates
      */
     protected function estimatePricing(string $provider, string $model): array
     {
@@ -104,6 +112,10 @@ class PricingResolver
 
     /**
      * Throw exception for unknown model
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @return never
      */
     protected function throwUnknownModelException(string $provider, string $model): never
     {

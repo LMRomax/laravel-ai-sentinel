@@ -15,6 +15,9 @@ class PromptLogger
 
     /**
      * Log an AI prompt and response
+     * 
+     * @param array $data An array containing provider, model, prompt, response, tokens_input, tokens_output, duration_ms, user_id, and metadata
+     * @return AiPromptsLog The created log entry
      */
     public function log(array $data): AiPromptsLog
     {
@@ -45,6 +48,9 @@ class PromptLogger
 
     /**
      * Get stats for a specific period
+     * 
+     * @param string $period The period to get stats for (day, week, month, year)
+     * @return array An array containing total requests, total cost, total tokens input/output, average cost per request, and breakdown by provider and model
      */
     public function getStats(string $period = 'day'): array
     {
@@ -73,6 +79,9 @@ class PromptLogger
 
     /**
      * Get stats grouped by provider
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query The base query to build on
+     * @return array An array of stats grouped by provider, keyed by provider name
      */
     protected function getStatsByProvider($query): array
     {
@@ -90,6 +99,9 @@ class PromptLogger
 
     /**
      * Get stats grouped by model
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query The base query to build on
+     * @return array An array of stats grouped by model, keyed by model name
      */
     protected function getStatsByModel($query): array
     {

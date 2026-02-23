@@ -14,6 +14,9 @@ class AiGuardService
 
     /**
      * Track an AI request
+     * 
+     * @param array $data An array containing provider, model, prompt, response, tokens_input, tokens_output, duration_ms, user_id, and metadata
+     * @return AiPromptsLog The created log entry
      */
     public function track(array $data): AiPromptsLog
     {
@@ -22,6 +25,9 @@ class AiGuardService
 
     /**
      * Optimize a prompt
+     * 
+     * @param string $prompt The original prompt to optimize
+     * @return array An array containing original, optimized, tokens saved, and compression ratio
      */
     public function optimize(string $prompt): array
     {
@@ -30,6 +36,9 @@ class AiGuardService
 
     /**
      * Get cost statistics
+     * 
+     * @param string $period The period to get stats for (day, week, month, year)
+     * @return array An array containing total requests, total cost, total tokens input/output, average cost per request, and breakdown by provider and model
      */
     public function getCostStats(string $period = 'day'): array
     {
@@ -38,6 +47,9 @@ class AiGuardService
 
     /**
      * Get total cost for a period
+     * 
+     * @param string $period The period to get total cost for (day, week, month, year)
+     * @return float The total cost for the specified period
      */
     public function getTotalCost(string $period = 'month'): float
     {
@@ -48,6 +60,12 @@ class AiGuardService
 
     /**
      * Calculate cost for given tokens
+     * 
+     * @param string $provider The provider name (e.g. 'openai')
+     * @param string $model The model name (e.g. 'gpt-4o')
+     * @param int $tokensInput The number of input tokens
+     * @param int $tokensOutput The number of output tokens
+     * @return float The calculated cost in dollars
      */
     public function calculateCost(
         string $provider,
@@ -60,6 +78,9 @@ class AiGuardService
 
     /**
      * Estimate tokens from text
+     * 
+     * @param string $text The input text to estimate tokens for
+     * @return int The estimated number of tokens
      */
     public function estimateTokens(string $text): int
     {
