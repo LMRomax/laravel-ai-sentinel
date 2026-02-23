@@ -105,7 +105,8 @@ return [
         'enabled' => env('AI_GUARD_ALERTS_ENABLED', true),
         'daily_limit' => env('AI_GUARD_DAILY_LIMIT', 100),
         'monthly_limit' => env('AI_GUARD_MONTHLY_LIMIT', 1000),
-        'notification_channels' => ['mail'],
+        'channels' => ['mail'], // mail, slack, discord (TODO: implement slack/discord)
+        'recipients' => explode(',', env('AI_GUARD_ALERT_EMAILS', '')), // comma-separated emails
     ],
 
     /*

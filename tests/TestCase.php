@@ -11,6 +11,7 @@ class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
+        $this->app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
     }
 
     protected function getPackageProviders($app): array
@@ -23,6 +24,8 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app): void
     {
+        // add login route
+        $app['router']->get('/login', fn () => 'login-page')->name('login');
         // Setup database
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [

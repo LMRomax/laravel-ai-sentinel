@@ -1,0 +1,50 @@
+<?php
+
+namespace Lmromax\LaravelAiGuard\Traits;
+
+use Lmromax\LaravelAiGuard\Facades\AiGuard;
+
+trait TracksAiRequests
+{
+    /**
+     * Make an AI request with automatic tracking and optimization
+     */
+    protected function aiRequest(string $provider, string $model, string $prompt, array $options = []): array
+    {
+        $startTime = microtime(true);
+
+        // Step 1: Optimize the prompt if enabled
+        $optimized = AiGuard::optimize($prompt);
+        $finalPrompt = $optimized['optimized'];
+
+        // Step 2: Make the actual AI call
+        $response = $this->callAiProvider($provider, $model, $finalPrompt, $options);
+
+        // Step 3: Calculate duration
+        $duration = (int) ((microtime(true) - $startTime) * 1000);
+
+        // Step 4: Track the request
+        AiGuard::track([
+            'provider' => $provider,
+            'model' => $model,
+            'prompt' => $finalPrompt,
+            'response' => $response['content'] ?? '',
+            'tokens_input' => $response['usage']['input_tokens'] ?? 0,
+            'tokens_output' => $response['usage']['output_tokens'] ?? 0,
+            'duration_ms' => $duration,
+            'user_id' => auth()->id(),
+            'metadata' => [
+                'original_prompt_tokens' => $optimized['tokens_original'],
+                'tokens_saved' => $optimized['tokens_saved'],
+                'optimization_enabled' => config('ai-guard.optimization.enabled', true),
+            ],
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Override this method to implement your AI provider logic
+     */
+    abstract protected function callAiProvider(string $provider, string $model, string $prompt, array $options): array;
+}

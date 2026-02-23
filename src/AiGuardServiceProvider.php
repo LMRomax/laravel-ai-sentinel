@@ -5,6 +5,8 @@ namespace Lmromax\LaravelAiGuard;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lmromax\LaravelAiGuard\Console\Commands\SyncPricingCommand;
+use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiGuard\Observers\AiPromptsLogObserver;
 use Lmromax\LaravelAiGuard\Services\AiGuardService;
 use Lmromax\LaravelAiGuard\Services\CostCalculator;
 use Lmromax\LaravelAiGuard\Services\PricingResolver;
@@ -42,6 +44,9 @@ class AiGuardServiceProvider extends ServiceProvider
 
         // Facade alias
         $this->app->alias(AiGuardService::class, 'ai-guard');
+
+        // Register observer for automatic alerts
+        AiPromptsLog::observe(AiPromptsLogObserver::class);
     }
 
     /**
@@ -94,5 +99,6 @@ class AiGuardServiceProvider extends ServiceProvider
         Livewire::component('ai-guard.provider-chart', \Lmromax\LaravelAiGuard\Http\Livewire\ProviderChart::class);
         Livewire::component('ai-guard.top-models', \Lmromax\LaravelAiGuard\Http\Livewire\TopModels::class);
         Livewire::component('ai-guard.recent-logs', \Lmromax\LaravelAiGuard\Http\Livewire\RecentLogs::class);
+        Livewire::component('ai-guard.prompt-optimizer', \Lmromax\LaravelAiGuard\Http\Livewire\PromptOptimizer::class);
     }
 }
