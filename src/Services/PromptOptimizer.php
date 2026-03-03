@@ -53,114 +53,173 @@ class PromptOptimizer
      * @param  string  $text  The input text to compress
      * @return string The compressed text
      */
+    /**
+     * Compress text to reduce tokens
+     *
+     * @param  string  $text  The input text to compress
+     * @return string The compressed text
+     */
     protected function compress(string $text): string
     {
-        if (! config('ai-guard.optimization.enable_compression', true)) {
+        if (!config('ai-guard.optimization.enable_compression', true)) {
             return $text;
         }
 
-        // -------------------------------
-        // 0) Normalisation préliminaire
-        // -------------------------------
+        // Clean and normalize
         $text = preg_replace('/\s+/u', ' ', trim($text));
-        $text = preg_replace('/([.!?])\1+/u', '$1', $text);
 
-        if ($text === '') {
-            return $text;
+        if (mb_strlen($text, 'UTF-8') < 100) {
+            return $text; // Too short to compress meaningfully
         }
 
-        // -------------------------------
-        // 1) Découpage en phrases
-        // -------------------------------
-        $sentences = preg_split('/(?<=[.!?。！？])\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY);
-        if (! $sentences || count($sentences) === 1) {
-            return $text;
+        // Split into sentences
+        $sentences = $this->splitIntoSentences($text);
+
+        if (count($sentences) <= 2) {
+            return $text; // Already concise
         }
 
-        // -------------------------------
-        // 2) Extraction du "topic principal"
-        // -------------------------------
-        preg_match_all('/\b[\p{L}\d]{3,}(?:\s+[\p{L}\d]{3,}){1,5}\b/iu', $text, $matches);
-        $candidates = $matches[0] ?? [];
+        // Extract keywords using TF-IDF-like approach
+        $keywords = $this->extractKeywords($text);
 
-        if (empty($candidates)) {
-            $mainTopic = mb_strtolower($sentences[0], 'UTF-8');
-        } else {
-            usort($candidates, fn ($a, $b) => mb_strlen($b) <=> mb_strlen($a));
-            $mainTopic = mb_strtolower(trim($candidates[0]), 'UTF-8');
+        // Score each sentence based on keyword presence
+        $scored = $this->scoreSentences($sentences, $keywords);
+
+        // Keep top 60% of sentences by score
+        $keepCount = max(2, (int)ceil(count($scored) * 0.6));
+        $topSentences = array_slice($scored, 0, $keepCount);
+
+        // Restore original order
+        usort($topSentences, fn($a, $b) => $a['index'] <=> $b['index']);
+
+        $compressed = implode(' ', array_column($topSentences, 'sentence'));
+
+        // Post-process
+        $compressed = $this->cleanupCompressed($compressed);
+
+        return $compressed;
+    }
+
+    /**
+     * Split text into sentences (works for most languages)
+     */
+    protected function splitIntoSentences(string $text): array
+    {
+        // Universal sentence enders
+        $pattern = '/(?<=[.!?。！？।।۔।])\s+/u';
+        $sentences = preg_split($pattern, $text, -1, PREG_SPLIT_NO_EMPTY);
+
+        return array_map('trim', $sentences);
+    }
+
+    /**
+     * Extract important keywords using frequency and position
+     */
+    protected function extractKeywords(string $text): array
+    {
+        // Tokenize (works for most scripts)
+        $words = preg_split('/[\s\p{P}]+/u', mb_strtolower($text, 'UTF-8'), -1, PREG_SPLIT_NO_EMPTY);
+
+        // Count frequencies
+        $freq = array_count_values($words);
+
+        // Filter out very short words (likely stop words in any language)
+        $freq = array_filter($freq, fn($word) => mb_strlen($word, 'UTF-8') >= 3, ARRAY_FILTER_USE_KEY);
+
+        // Keep only words that appear multiple times OR are long (likely important)
+        $keywords = [];
+        foreach ($freq as $word => $count) {
+            if ($count >= 2 || mb_strlen($word, 'UTF-8') >= 8) {
+                $keywords[$word] = $count;
+            }
         }
 
-        // -------------------------------
-        // 3) Scoring des phrases
-        // -------------------------------
+        // Sort by frequency
+        arsort($keywords);
+
+        // Return top 15 keywords
+        return array_slice($keywords, 0, 15, true);
+    }
+
+    /**
+     * Score sentences based on keyword density and position
+     */
+    protected function scoreSentences(array $sentences, array $keywords): array
+    {
         $scored = [];
+        $totalSentences = count($sentences);
 
         foreach ($sentences as $index => $sentence) {
-            $s = trim($sentence);
-            if ($s === '') {
-                continue;
+            $sLower = mb_strtolower($sentence, 'UTF-8');
+
+            // Count keyword occurrences in this sentence
+            $keywordScore = 0;
+            foreach ($keywords as $keyword => $freq) {
+                if (mb_stripos($sLower, $keyword) !== false) {
+                    $keywordScore += $freq;
+                }
             }
 
-            $sLower = mb_strtolower($s, 'UTF-8');
+            // Position bonus (first and last sentences often important)
+            $positionScore = 0;
+            if ($index === 0) {
+                $positionScore = 2; // First sentence bonus
+            } elseif ($index === $totalSentences - 1) {
+                $positionScore = 1; // Last sentence bonus
+            }
 
-            $topicBoost = str_contains($sLower, $mainTopic) ? 2.5 : 0;
+            // Length penalty (very short sentences often less informative)
+            $length = mb_strlen($sentence, 'UTF-8');
+            $lengthScore = ($length >= 20) ? 1 : 0;
 
-            $words = preg_split('/\s+/u', $sLower);
-            $unique = array_unique($words);
-            $density = count($unique) / max(count($words), 1);
-
-            $lenScore = min(mb_strlen($s, 'UTF-8') / 300, 0.2);
-            $posBoost = $index === 0 ? 0.2 : 0;
-
-            $totalScore = $density + $lenScore + $topicBoost + $posBoost;
+            $totalScore = $keywordScore + $positionScore + $lengthScore;
 
             $scored[] = [
                 'index' => $index,
-                'sentence' => $s,
+                'sentence' => $sentence,
                 'score' => $totalScore,
             ];
         }
 
-        // -------------------------------
-        // 4) Sélection des phrases importantes
-        // -------------------------------
-        usort($scored, fn ($a, $b) => $b['score'] <=> $a['score']);
+        // Sort by score descending
+        usort($scored, fn($a, $b) => $b['score'] <=> $a['score']);
 
-        // Nombre de phrases gardées : 2 ou 3 max
-        $top = array_slice($scored, 0, 3);
-        usort($top, fn ($a, $b) => $a['index'] <=> $b['index']);
+        return $scored;
+    }
 
-        $summary = implode(' ', array_map(fn ($s) => $s['sentence'], $top));
+    /**
+     * Clean up compressed text
+     * 
+     * @var string $text
+     * @return string
+     */
+    protected function cleanupCompressed(string $text): string
+    {
+        // Remove common filler phrases (multilingual)
+        $fillers = [
+            // English
+            '/\b(please|kindly|if you (could|would|can)|I would like|could you please)\b/iu',
+            '/\b(thank you|thanks|sorry|excuse me)\s*(so much|very much|in advance)?\b/iu',
 
-        // -------------------------------
-        // 5) Nettoyage final orienté "prompt"
-        // -------------------------------
+            // French
+            '/\b(s\'il vous plaît|s\'il te plaît|merci|désolé|excusez-moi)\b/iu',
 
-        // Virer le small talk au début
-        $summary = preg_replace(
-            '/^(hi|hello|hey|salut|coucou)[^a-zA-Z0-9]+/iu',
-            '',
-            $summary
-        );
+            // Spanish  
+            '/\b(por favor|gracias|lo siento|disculpe)\b/iu',
 
-        // Virer les excuses / remerciements de fin + tout ce qui suit
-        $summary = preg_replace(
-            '/\b(sorry if this is long|sorry if this is|i know i\'m rambling|i know I\'m rambling|thank you so much|merci beaucoup)\b.*$/iu',
-            '',
-            $summary
-        );
+            // German
+            '/\b(bitte|danke|entschuldigung)\b/iu',
+        ];
 
-        // Nettoyage des double virgules/espaces
-        $summary = preg_replace('/\s+([,.!?])/', '$1', $summary);
-        $summary = preg_replace('/[,.]{2,}/', '$0[0]', $summary);
-        $summary = preg_replace('/\s+/u', ' ', $summary);
+        foreach ($fillers as $pattern) {
+            $text = preg_replace($pattern, '', $text);
+        }
 
-        // Trim final propre (éviter virgule/point au début/fin)
-        $summary = trim($summary, " \t\n\r\0\x0B,.");
+        // Clean up whitespace
+        $text = preg_replace('/\s+/u', ' ', $text);
+        $text = preg_replace('/\s+([,.!?])/u', '$1', $text);
 
-        $summary = $this->postProcessPrompt($summary);
-
-        return $summary;
+        return trim($text);
     }
 
     /**
@@ -196,7 +255,7 @@ class PromptOptimizer
         //    (explain / show / describe / help / explique / montre / décris / aide...)
         if (preg_match(
             '/\b(explain|show|describe|help|teach|guide|'
-                .'explique(?:r)?|montre(?:r)?|décris|aide(?:r)?)\b/iu',
+                . 'explique(?:r)?|montre(?:r)?|décris|aide(?:r)?)\b/iu',
             $text,
             $m,
             PREG_OFFSET_CAPTURE
@@ -207,7 +266,7 @@ class PromptOptimizer
         // 4) Nettoyage des fillers classiques (en / fr)
         $text = preg_replace(
             '/\b(really|actually|basically|maybe|kind of|sort of|like|'
-                .'franchement|vraiment|un peu|genre|en fait)\b[, ]*/iu',
+                . 'franchement|vraiment|un peu|genre|en fait)\b[, ]*/iu',
             ' ',
             $text
         );
@@ -244,6 +303,6 @@ class PromptOptimizer
         $ratio = $maxTokens / $estimatedTokens;
         $targetLength = (int) (strlen($context) * $ratio);
 
-        return substr($context, 0, $targetLength).'...';
+        return substr($context, 0, $targetLength) . '...';
     }
 }
