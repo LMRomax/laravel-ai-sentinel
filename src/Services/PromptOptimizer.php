@@ -67,8 +67,9 @@ class PromptOptimizer
             } catch (\Exception $e) {
                 // Fallback to rule-based if AI compression fails
                 Log::warning('AI compression failed, falling back to rules', [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
+
                 return $this->ruleBasedCompress($text);
             }
         }
@@ -96,12 +97,12 @@ class PromptOptimizer
 - Keep all technical terms, numbers, names, specific requirements
 - Maintain the original tone (question/command/request)
 - Output ONLY the compressed prompt, no explanations
-- If the prompt is already optimal, return it unchanged'
+- If the prompt is already optimal, return it unchanged',
                     ],
                     [
                         'role' => 'user',
-                        'content' => $text
-                    ]
+                        'content' => $text,
+                    ],
                 ],
                 'max_tokens' => (int) ceil($this->costCalculator->estimateTokens($text) * 0.8),
                 'temperature' => 0.3,
@@ -118,8 +119,8 @@ class PromptOptimizer
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => "Compress this prompt by removing filler words while keeping ALL key information:\n\n{$text}\n\nCompressed version:"
-                    ]
+                        'content' => "Compress this prompt by removing filler words while keeping ALL key information:\n\n{$text}\n\nCompressed version:",
+                    ],
                 ],
             ]);
 
@@ -132,9 +133,8 @@ class PromptOptimizer
 
     /**
      * Rule-based compression (fallback, works offline)
-     * 
-     * @var string $text
-     * @return string
+     *
+     * @var string
      */
     protected function ruleBasedCompress(string $text): string
     {
@@ -166,11 +166,11 @@ class PromptOptimizer
         $scored = $this->scoreSentencesForCompression($sentences, $keywords);
 
         // Step 7: Keep most important sentences (60-70%)
-        $keepCount = max(2, (int)ceil(count($scored) * 0.65));
+        $keepCount = max(2, (int) ceil(count($scored) * 0.65));
         $topSentences = array_slice($scored, 0, $keepCount);
 
         // Step 8: Restore original order
-        usort($topSentences, fn($a, $b) => $a['index'] <=> $b['index']);
+        usort($topSentences, fn ($a, $b) => $a['index'] <=> $b['index']);
 
         // Step 9: Reconstruct and clean
         $compressed = implode(' ', array_column($topSentences, 'sentence'));
@@ -185,9 +185,8 @@ class PromptOptimizer
 
     /**
      * Split text into sentences (multilingual)
-     * 
-     * @var string $text
-     * @return array
+     *
+     * @var string
      */
     protected function splitIntoSentences(string $text): array
     {
@@ -200,9 +199,8 @@ class PromptOptimizer
 
     /**
      * Extract important keywords using frequency and length
-     * 
-     * @var string $text
-     * @return array
+     *
+     * @var string
      */
     protected function extractKeywordsFromText(string $text): array
     {
@@ -288,7 +286,7 @@ class PromptOptimizer
             $len = mb_strlen($word, 'UTF-8');
 
             // Keep if: appears 2+ times OR is long (8+ chars) OR medium (4-7 chars) with high freq
-            if (!in_array($word, $stopWords)) {
+            if (! in_array($word, $stopWords)) {
                 if ($count >= 2 || $len >= 8 || ($len >= 4 && $count >= 2)) {
                     $keywords[$word] = $count * ($len / 10); // Weight by frequency * length
                 }
@@ -304,10 +302,9 @@ class PromptOptimizer
 
     /**
      * Score sentences based on multiple factors
-     * 
-     * @var array $sentences
-     * @var array $keywords
-     * @return array
+     *
+     * @var array
+     * @var array
      */
     protected function scoreSentencesForCompression(array $sentences, array $keywords): array
     {
@@ -366,16 +363,15 @@ class PromptOptimizer
         }
 
         // Sort by score descending
-        usort($scored, fn($a, $b) => $b['score'] <=> $a['score']);
+        usort($scored, fn ($a, $b) => $b['score'] <=> $a['score']);
 
         return $scored;
     }
 
     /**
      * Remove common filler phrases (multilingual)
-     * 
-     * @var string $test
-     * @return string
+     *
+     * @var string
      */
     protected function removeFillerPhrases(string $text): string
     {
