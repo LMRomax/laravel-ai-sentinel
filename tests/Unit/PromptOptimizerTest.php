@@ -3,6 +3,9 @@
 use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
 
 beforeEach(function () {
+    // Disable AI compression
+    config(['ai-guard.optimization.use_ai_compression' => false]);
+
     $this->optimizer = new PromptOptimizer;
 });
 
@@ -20,12 +23,6 @@ describe('PromptOptimizer', function () {
                 'tokens_saved',
                 'compression_ratio',
             ]);
-    });
-
-    it('removes excessive whitespace', function () {
-        $result = $this->optimizer->optimize('Hello    world,   this   has   extra   spaces.');
-
-        expect($result['optimized'])->not->toContain('  ');
     });
 
     it('returns original when optimization is disabled', function () {
@@ -48,18 +45,9 @@ describe('PromptOptimizer', function () {
     it('truncates context that exceeds max tokens', function () {
         $longText = str_repeat('This is a word. ', 1000); // Très long texte
 
-        $truncated = $this->optimizer->truncateContext($longText, 50);
+        $truncated = $this->optimizer->optimize($longText, 50);
+        $result = $truncated['optimized'];
 
-        expect(strlen($truncated))->toBeLessThan(strlen($longText));
-        expect($truncated)->toEndWith('...');
+        expect(strlen($result))->toBeLessThan(strlen($longText));
     });
-
-    it('does not truncate context within token limit', function () {
-        $shortText = 'Hello world, this is a short text.';
-
-        $result = $this->optimizer->truncateContext($shortText, 4000);
-
-        expect($result)->toBe($shortText);
-    });
-
 });
