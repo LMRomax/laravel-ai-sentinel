@@ -119,10 +119,13 @@ return [
     */
     'optimization' => [
         'enabled' => env('AI_GUARD_OPTIMIZATION_ENABLED', true),
-        'max_context_tokens' => 4000,
-        'enable_compression' => true,
-        'cache_responses' => true,
-        'cache_ttl' => 3600, // seconds (1 hour)
+        'enable_compression' => env('AI_GUARD_ENABLE_COMPRESSION', true),
+        'max_context_tokens' => env('AI_GUARD_MAX_CONTEXT_TOKENS', 4000),
+
+        // AI-powered compression (recommended)
+        'use_ai_compression' => env('AI_GUARD_USE_AI_COMPRESSION', true),
+        'compression_provider' => env('AI_GUARD_COMPRESSION_PROVIDER', 'openai'), // openai, anthropic
+        'compression_model' => env('AI_GUARD_COMPRESSION_MODEL', 'gpt-4o-mini'), // Ultra cheap: $0.00015/1K tokens
     ],
 
     /*

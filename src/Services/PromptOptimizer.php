@@ -2,6 +2,8 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
+use Illuminate\Support\Facades\Log;
+
 class PromptOptimizer
 {
     protected CostCalculator $costCalculator;
@@ -13,9 +15,6 @@ class PromptOptimizer
 
     /**
      * Optimize a prompt to reduce token usage
-     *
-     * @param  string  $prompt  The original prompt to optimize
-     * @return array An array containing original, optimized, tokens saved, and compression ratio
      */
     public function optimize(string $prompt): array
     {
@@ -48,131 +47,316 @@ class PromptOptimizer
     }
 
     /**
-     * Compress text to reduce tokens
-     *
-     * @param  string  $text  The input text to compress
-     * @return string The compressed text
-     */
-    /**
-     * Compress text to reduce tokens
-     *
-     * @param  string  $text  The input text to compress
-     * @return string The compressed text
+     * Compress text using AI (intelligent, multilingual)
      */
     protected function compress(string $text): string
     {
-        if (!config('ai-guard.optimization.enable_compression', true)) {
+        if (! config('ai-guard.optimization.enable_compression', true)) {
             return $text;
         }
 
-        // Clean and normalize
+        // Don't compress if already short
+        if (mb_strlen($text, 'UTF-8') < 100) {
+            return $text;
+        }
+
+        // Use AI-powered compression if available
+        if (config('ai-guard.optimization.use_ai_compression', true)) {
+            try {
+                return $this->aiCompress($text);
+            } catch (\Exception $e) {
+                // Fallback to rule-based if AI compression fails
+                Log::warning('AI compression failed, falling back to rules', [
+                    'error' => $e->getMessage()
+                ]);
+                return $this->ruleBasedCompress($text);
+            }
+        }
+
+        return $this->ruleBasedCompress($text);
+    }
+
+    /**
+     * AI-powered compression (intelligent, preserves meaning)
+     */
+    protected function aiCompress(string $text): string
+    {
+        $provider = config('ai-guard.optimization.compression_provider', 'openai');
+        $model = config('ai-guard.optimization.compression_model', 'gpt-4o-mini');
+
+        // OpenAI compression
+        if ($provider === 'openai' && class_exists(\OpenAI\Laravel\Facades\OpenAI::class)) {
+            $response = \OpenAI\Laravel\Facades\OpenAI::chat()->create([
+                'model' => $model,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are a prompt compression expert. Your job is to rewrite user prompts to be maximally concise while preserving 100% of the original meaning, intent, and key information. Rules:
+- Remove filler words, greetings, politeness markers
+- Keep all technical terms, numbers, names, specific requirements
+- Maintain the original tone (question/command/request)
+- Output ONLY the compressed prompt, no explanations
+- If the prompt is already optimal, return it unchanged'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $text
+                    ]
+                ],
+                'max_tokens' => (int) ceil($this->costCalculator->estimateTokens($text) * 0.8),
+                'temperature' => 0.3,
+            ]);
+
+            return trim($response->choices[0]->message->content);
+        }
+
+        // Anthropic compression
+        if ($provider === 'anthropic' && class_exists(\Anthropic\Laravel\Facades\Anthropic::class)) {
+            $response = \Anthropic\Laravel\Facades\Anthropic::messages()->create([
+                'model' => $model,
+                'max_tokens' => (int) ceil($this->costCalculator->estimateTokens($text) * 0.8),
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => "Compress this prompt by removing filler words while keeping ALL key information:\n\n{$text}\n\nCompressed version:"
+                    ]
+                ],
+            ]);
+
+            return trim($response->content[0]->text);
+        }
+
+        // If no provider available, fallback
+        throw new \Exception('No AI compression provider available');
+    }
+
+    /**
+     * Rule-based compression (fallback, works offline)
+     * 
+     * @var string $text
+     * @return string
+     */
+    protected function ruleBasedCompress(string $text): string
+    {
+        // Step 1: Clean and normalize
         $text = preg_replace('/\s+/u', ' ', trim($text));
 
         if (mb_strlen($text, 'UTF-8') < 100) {
-            return $text; // Too short to compress meaningfully
+            return $text; // Too short to compress
         }
 
-        // Split into sentences
+        // Step 2: Remove greetings at start
+        $text = preg_replace('/^(hi|hello|hey|salut|hola|hallo|bonjour|buenos días|guten tag|ciao)[,\s!]+/iu', '', $text);
+
+        // Step 3: Remove politeness/thanks at end
+        $text = preg_replace('/\s+(thank you|thanks|merci|gracias|danke|grazie)[^.!?]*[.!?]?$/iu', '.', $text);
+        $text = preg_replace('/\s+(i appreciate|i\'m grateful|i know you\'re busy)[^.!?]*[.!?]?$/iu', '.', $text);
+
+        // Step 4: Split into sentences
         $sentences = $this->splitIntoSentences($text);
 
         if (count($sentences) <= 2) {
-            return $text; // Already concise
+            return $this->removeFillerPhrases($text);
         }
 
-        // Extract keywords using TF-IDF-like approach
-        $keywords = $this->extractKeywords($text);
+        // Step 5: Extract keywords (TF-IDF-like approach)
+        $keywords = $this->extractKeywordsFromText($text);
 
-        // Score each sentence based on keyword presence
-        $scored = $this->scoreSentences($sentences, $keywords);
+        // Step 6: Score sentences
+        $scored = $this->scoreSentencesForCompression($sentences, $keywords);
 
-        // Keep top 60% of sentences by score
-        $keepCount = max(2, (int)ceil(count($scored) * 0.6));
+        // Step 7: Keep most important sentences (60-70%)
+        $keepCount = max(2, (int)ceil(count($scored) * 0.65));
         $topSentences = array_slice($scored, 0, $keepCount);
 
-        // Restore original order
+        // Step 8: Restore original order
         usort($topSentences, fn($a, $b) => $a['index'] <=> $b['index']);
 
+        // Step 9: Reconstruct and clean
         $compressed = implode(' ', array_column($topSentences, 'sentence'));
+        $compressed = $this->removeFillerPhrases($compressed);
 
-        // Post-process
-        $compressed = $this->cleanupCompressed($compressed);
+        // Step 10: Final cleanup
+        $compressed = preg_replace('/\s+([,.!?])/u', '$1', $compressed);
+        $compressed = preg_replace('/\s+/u', ' ', $compressed);
 
-        return $compressed;
+        return trim($compressed);
     }
 
     /**
-     * Split text into sentences (works for most languages)
+     * Split text into sentences (multilingual)
+     * 
+     * @var string $text
+     * @return array
      */
     protected function splitIntoSentences(string $text): array
     {
-        // Universal sentence enders
-        $pattern = '/(?<=[.!?。！？।।۔।])\s+/u';
+        // Sentence boundaries for major languages
+        $pattern = '/(?<=[.!?。！？।۔।])\s+/u';
         $sentences = preg_split($pattern, $text, -1, PREG_SPLIT_NO_EMPTY);
 
-        return array_map('trim', $sentences);
+        return array_map('trim', array_filter($sentences));
     }
 
     /**
-     * Extract important keywords using frequency and position
+     * Extract important keywords using frequency and length
+     * 
+     * @var string $text
+     * @return array
      */
-    protected function extractKeywords(string $text): array
+    protected function extractKeywordsFromText(string $text): array
     {
-        // Tokenize (works for most scripts)
+        // Tokenize (works across scripts)
         $words = preg_split('/[\s\p{P}]+/u', mb_strtolower($text, 'UTF-8'), -1, PREG_SPLIT_NO_EMPTY);
 
         // Count frequencies
         $freq = array_count_values($words);
 
-        // Filter out very short words (likely stop words in any language)
-        $freq = array_filter($freq, fn($word) => mb_strlen($word, 'UTF-8') >= 3, ARRAY_FILTER_USE_KEY);
+        // Common stop words (expand as needed)
+        $stopWords = [
+            'the',
+            'a',
+            'an',
+            'and',
+            'or',
+            'but',
+            'in',
+            'on',
+            'at',
+            'to',
+            'for',
+            'of',
+            'with',
+            'by',
+            'from',
+            'as',
+            'is',
+            'was',
+            'are',
+            'were',
+            'be',
+            'this',
+            'that',
+            'these',
+            'those',
+            'i',
+            'you',
+            'he',
+            'she',
+            'it',
+            'we',
+            'they',
+            // French
+            'le',
+            'la',
+            'les',
+            'un',
+            'une',
+            'des',
+            'de',
+            'et',
+            'ou',
+            'dans',
+            'sur',
+            // Spanish
+            'el',
+            'la',
+            'los',
+            'las',
+            'un',
+            'una',
+            'y',
+            'o',
+            'en',
+            'con',
+            // German
+            'der',
+            'die',
+            'das',
+            'den',
+            'dem',
+            'ein',
+            'eine',
+            'und',
+            'oder',
+            'in',
+        ];
 
-        // Keep only words that appear multiple times OR are long (likely important)
+        // Filter: remove short words and stop words
         $keywords = [];
         foreach ($freq as $word => $count) {
-            if ($count >= 2 || mb_strlen($word, 'UTF-8') >= 8) {
-                $keywords[$word] = $count;
+            $len = mb_strlen($word, 'UTF-8');
+
+            // Keep if: appears 2+ times OR is long (8+ chars) OR medium (4-7 chars) with high freq
+            if (!in_array($word, $stopWords)) {
+                if ($count >= 2 || $len >= 8 || ($len >= 4 && $count >= 2)) {
+                    $keywords[$word] = $count * ($len / 10); // Weight by frequency * length
+                }
             }
         }
 
-        // Sort by frequency
+        // Sort by importance
         arsort($keywords);
 
-        // Return top 15 keywords
-        return array_slice($keywords, 0, 15, true);
+        // Return top 20 keywords
+        return array_slice($keywords, 0, 20, true);
     }
 
     /**
-     * Score sentences based on keyword density and position
+     * Score sentences based on multiple factors
+     * 
+     * @var array $sentences
+     * @var array $keywords
+     * @return array
      */
-    protected function scoreSentences(array $sentences, array $keywords): array
+    protected function scoreSentencesForCompression(array $sentences, array $keywords): array
     {
         $scored = [];
         $totalSentences = count($sentences);
 
         foreach ($sentences as $index => $sentence) {
             $sLower = mb_strtolower($sentence, 'UTF-8');
+            $sLength = mb_strlen($sentence, 'UTF-8');
 
-            // Count keyword occurrences in this sentence
+            // Factor 1: Keyword density
             $keywordScore = 0;
-            foreach ($keywords as $keyword => $freq) {
+            foreach ($keywords as $keyword => $weight) {
                 if (mb_stripos($sLower, $keyword) !== false) {
-                    $keywordScore += $freq;
+                    $keywordScore += $weight;
                 }
             }
 
-            // Position bonus (first and last sentences often important)
+            // Factor 2: Position importance
             $positionScore = 0;
             if ($index === 0) {
-                $positionScore = 2; // First sentence bonus
+                $positionScore = 3; // First sentence very important
             } elseif ($index === $totalSentences - 1) {
-                $positionScore = 1; // Last sentence bonus
+                $positionScore = 1.5; // Last sentence somewhat important
             }
 
-            // Length penalty (very short sentences often less informative)
-            $length = mb_strlen($sentence, 'UTF-8');
-            $lengthScore = ($length >= 20) ? 1 : 0;
+            // Factor 3: Length (not too short, not too long)
+            $lengthScore = 0;
+            if ($sLength >= 30 && $sLength <= 200) {
+                $lengthScore = 1.5; // Optimal length
+            } elseif ($sLength >= 20 && $sLength < 30) {
+                $lengthScore = 0.8; // Short but ok
+            } elseif ($sLength > 200) {
+                $lengthScore = -0.5; // Too long, likely rambling
+            }
 
-            $totalScore = $keywordScore + $positionScore + $lengthScore;
+            // Factor 4: Question sentences (often important)
+            $questionScore = 0;
+            if (preg_match('/[?？]/u', $sentence)) {
+                $questionScore = 1;
+            }
+
+            // Factor 5: Contains numbers/technical terms (likely important)
+            $technicalScore = 0;
+            if (preg_match('/\d+|code|example|api|function|method|class|database/iu', $sentence)) {
+                $technicalScore = 1.5;
+            }
+
+            $totalScore = $keywordScore + $positionScore + $lengthScore + $questionScore + $technicalScore;
 
             $scored[] = [
                 'index' => $index,
@@ -188,121 +372,51 @@ class PromptOptimizer
     }
 
     /**
-     * Clean up compressed text
+     * Remove common filler phrases (multilingual)
      * 
-     * @var string $text
+     * @var string $test
      * @return string
      */
-    protected function cleanupCompressed(string $text): string
+    protected function removeFillerPhrases(string $text): string
     {
-        // Remove common filler phrases (multilingual)
-        $fillers = [
-            // English
-            '/\b(please|kindly|if you (could|would|can)|I would like|could you please)\b/iu',
-            '/\b(thank you|thanks|sorry|excuse me)\s*(so much|very much|in advance)?\b/iu',
+        $patterns = [
+            // Hedging/uncertainty
+            '/\b(I think|I believe|I guess|I suppose|maybe|perhaps|possibly|probably)\b\s*/iu',
+            '/\b(kind of|sort of|a bit|a little|somewhat)\b\s*/iu',
 
-            // French
-            '/\b(s\'il vous plaît|s\'il te plaît|merci|désolé|excusez-moi)\b/iu',
+            // Politeness markers
+            '/\b(please|kindly|if you (could|would|can|don\'t mind))\b\s*/iu',
+            '/\b(I would (like|appreciate|be grateful))\b\s*/iu',
+            '/\b(could you please|would you mind)\b\s*/iu',
 
-            // Spanish  
-            '/\b(por favor|gracias|lo siento|disculpe)\b/iu',
+            // Redundant phrases
+            '/\b(I was wondering if|I wanted to ask|let me know)\b\s*/iu',
+            '/\b(as I mentioned|as I said|like I said)\b\s*/iu',
+            '/\b(you know|you see|right)\b[,\s]*/iu',
 
-            // German
-            '/\b(bitte|danke|entschuldigung)\b/iu',
+            // Meta-commentary
+            '/\b(I know this (is|might be)|this might be)\b[^.!?]*[,\s]*/iu',
+            '/\b(sorry if|excuse me|pardon me)\b[^.!?]*[,\s]*/iu',
+
+            // Filler transitions
+            '/\b(so basically|essentially|actually|literally)\b\s*/iu',
+            '/\b(by the way|speaking of|on that note)\b[,\s]*/iu',
+
+            // Verbose constructions
+            '/\bin order to\b/iu' => 'to',
+            '/\bdue to the fact that\b/iu' => 'because',
+            '/\bat this point in time\b/iu' => 'now',
+            '/\bin the event that\b/iu' => 'if',
         ];
 
-        foreach ($fillers as $pattern) {
-            $text = preg_replace($pattern, '', $text);
+        foreach ($patterns as $pattern => $replacement) {
+            if (is_int($pattern)) {
+                $text = preg_replace($replacement, '', $text);
+            } else {
+                $text = preg_replace($pattern, $replacement, $text);
+            }
         }
-
-        // Clean up whitespace
-        $text = preg_replace('/\s+/u', ' ', $text);
-        $text = preg_replace('/\s+([,.!?])/u', '$1', $text);
-
-        return trim($text);
-    }
-
-    /**
-     * Post-process the optimized prompt to further reduce tokens by removing common fillers, greetings, and apologies.
-     * This is a more aggressive cleanup step that can be applied after the main optimization to squeeze out
-     * any remaining fluff that doesn't add value to the prompt. It targets common patterns in both English and French.
-     *
-     * @param  string  $text  The input text to post-process
-     * @return string The post-processed text with reduced tokens
-     */
-    protected function postProcessPrompt(string $text): string
-    {
-        $text = trim($text);
-        if ($text === '') {
-            return $text;
-        }
-
-        // 1) Enlever les salutations / small talk initiaux (en / fr)
-        $text = preg_replace(
-            '/^(hi|hello|hey|salut|coucou|bonjour)[^a-zA-Z0-9]+/iu',
-            '',
-            $text
-        );
-
-        // 2) Couper tout ce qui suit excuses / remerciements de fin
-        $text = preg_replace(
-            '/\b(sorry if this is long|sorry if this is|i know i\'m rambling|i know I\'m rambling|merci beaucoup|thank you so much|thanks a lot)\b.*$/iu',
-            '',
-            $text
-        );
-
-        // 3) Focus : on coupe tout ce qui précède la première vraie demande
-        //    (explain / show / describe / help / explique / montre / décris / aide...)
-        if (preg_match(
-            '/\b(explain|show|describe|help|teach|guide|'
-                . 'explique(?:r)?|montre(?:r)?|décris|aide(?:r)?)\b/iu',
-            $text,
-            $m,
-            PREG_OFFSET_CAPTURE
-        )) {
-            $text = ltrim(substr($text, $m[0][1]));
-        }
-
-        // 4) Nettoyage des fillers classiques (en / fr)
-        $text = preg_replace(
-            '/\b(really|actually|basically|maybe|kind of|sort of|like|'
-                . 'franchement|vraiment|un peu|genre|en fait)\b[, ]*/iu',
-            ' ',
-            $text
-        );
-
-        // 5) Nettoyage espaces + ponctuation
-        $text = preg_replace('/\s+([,.!?])/', '$1', $text);   // espace avant ponctuation
-        $text = preg_replace('/([,.!?])\s*([,.!?])/', '$1 ', $text); // double ponctuation
-        $text = preg_replace('/\s+/u', ' ', $text);
-
-        // 6) Trim final propre
-        $text = trim($text, " \t\n\r\0\x0B,.");
 
         return $text;
-    }
-
-    /**
-     * Truncate context to fit within token limit
-     *
-     * @param  string  $context  The input context to truncate
-     * @param  int|null  $maxTokens  Optional max tokens to fit within (defaults to config value)
-     * @return string The truncated context
-     */
-    public function truncateContext(string $context, ?int $maxTokens = null): string
-    {
-        $maxTokens = $maxTokens ?? config('ai-guard.optimization.max_context_tokens', 4000);
-
-        $estimatedTokens = $this->costCalculator->estimateTokens($context);
-
-        if ($estimatedTokens <= $maxTokens) {
-            return $context;
-        }
-
-        // Rough truncation: keep ratio
-        $ratio = $maxTokens / $estimatedTokens;
-        $targetLength = (int) (strlen($context) * $ratio);
-
-        return substr($context, 0, $targetLength) . '...';
     }
 }

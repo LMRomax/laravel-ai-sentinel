@@ -33,6 +33,9 @@
         "pestphp/pest": "^3.0|^4.0",
         "phpunit/phpunit": "^11.0|^12.0"
     },
+    "suggest": {
+        "openai-php/laravel": "Required for AI-powered prompt compression (^0.10)"
+    },
     "autoload": {
         "psr-4": {
             "Lmromax\\LaravelAiGuard\\": "src/"
@@ -60,7 +63,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",
