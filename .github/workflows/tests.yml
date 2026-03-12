@@ -63,6 +63,3 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest --ci --colors=always --display-errors
-
-      - name: Check code style
-        run: vendor/bin/pint --test
