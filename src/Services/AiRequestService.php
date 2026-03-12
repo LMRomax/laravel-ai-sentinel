@@ -2,6 +2,8 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
+use Anthropic\Laravel\Facades\Anthropic;
+use Groq\Laravel\Facades\Groq;
 use Illuminate\Support\Str;
 use Lmromax\LaravelAiGuard\Facades\AiGuard;
 
@@ -146,7 +148,7 @@ class AiRequestService
     public function anthropic(string $model, string $prompt, array $options = [])
     {
         return $this->process('anthropic', $model, $prompt, function ($model, $finalPrompt, $options) {
-            $raw = \Anthropic\Laravel\Facades\Anthropic::messages()->create(array_merge([
+            $raw = Anthropic::messages()->create(array_merge([
                 'model' => $model,
                 'max_tokens' => 1024,
                 'messages' => [['role' => 'user', 'content' => $finalPrompt]],
@@ -177,7 +179,7 @@ class AiRequestService
     public function groq(string $model, string $prompt, array $options = [])
     {
         return $this->process('groq', $model, $prompt, function ($model, $finalPrompt, $options) {
-            $raw = \Groq\Laravel\Facades\Groq::chat()->create(array_merge([
+            $raw = Groq::chat()->create(array_merge([
                 'model' => $model,
                 'messages' => [['role' => 'user', 'content' => $finalPrompt]],
             ], $options));

@@ -5,6 +5,12 @@ namespace Lmromax\LaravelAiGuard;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Lmromax\LaravelAiGuard\Console\Commands\SyncPricingCommand;
+use Lmromax\LaravelAiGuard\Http\Livewire\CostChart;
+use Lmromax\LaravelAiGuard\Http\Livewire\HistoricalChart;
+use Lmromax\LaravelAiGuard\Http\Livewire\ProviderChart;
+use Lmromax\LaravelAiGuard\Http\Livewire\RecentLogs;
+use Lmromax\LaravelAiGuard\Http\Livewire\StatsCards;
+use Lmromax\LaravelAiGuard\Http\Livewire\TopModels;
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 use Lmromax\LaravelAiGuard\Observers\AiPromptsLogObserver;
 use Lmromax\LaravelAiGuard\Services\AiGuardService;
@@ -94,12 +100,12 @@ class AiGuardServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents(): void
     {
-        Livewire::component('ai-guard.stats-cards', \Lmromax\LaravelAiGuard\Http\Livewire\StatsCards::class);
-        Livewire::component('ai-guard.cost-chart', \Lmromax\LaravelAiGuard\Http\Livewire\CostChart::class);
-        Livewire::component('ai-guard.provider-chart', \Lmromax\LaravelAiGuard\Http\Livewire\ProviderChart::class);
-        Livewire::component('ai-guard.top-models', \Lmromax\LaravelAiGuard\Http\Livewire\TopModels::class);
-        Livewire::component('ai-guard.recent-logs', \Lmromax\LaravelAiGuard\Http\Livewire\RecentLogs::class);
-        Livewire::component('ai-guard.prompt-optimizer', \Lmromax\LaravelAiGuard\Http\Livewire\PromptOptimizer::class);
-        Livewire::component('ai-guard.historical-chart', \Lmromax\LaravelAiGuard\Http\Livewire\HistoricalChart::class);
+        Livewire::component('ai-guard.stats-cards', StatsCards::class);
+        Livewire::component('ai-guard.cost-chart', CostChart::class);
+        Livewire::component('ai-guard.provider-chart', ProviderChart::class);
+        Livewire::component('ai-guard.top-models', TopModels::class);
+        Livewire::component('ai-guard.recent-logs', RecentLogs::class);
+        Livewire::component('ai-guard.prompt-optimizer', Http\Livewire\PromptOptimizer::class);
+        Livewire::component('ai-guard.historical-chart', HistoricalChart::class);
     }
 }

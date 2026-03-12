@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Foundation\Auth\User;
 use Livewire\Livewire;
 use Lmromax\LaravelAiGuard\Http\Livewire\PromptOptimizer;
 
 beforeEach(function () {
-    $this->user = new \Illuminate\Foundation\Auth\User;
+    $this->user = new User;
     $this->user->id = 1;
 });
 

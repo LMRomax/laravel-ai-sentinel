@@ -2,6 +2,7 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
 
 class PromptLogger
@@ -80,7 +81,7 @@ class PromptLogger
     /**
      * Get stats grouped by provider
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query  The base query to build on
+     * @param  Builder  $query  The base query to build on
      * @return array An array of stats grouped by provider, keyed by provider name
      */
     protected function getStatsByProvider($query): array
@@ -100,7 +101,7 @@ class PromptLogger
     /**
      * Get stats grouped by model
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query  The base query to build on
+     * @param  Builder  $query  The base query to build on
      * @return array An array of stats grouped by model, keyed by model name
      */
     protected function getStatsByModel($query): array

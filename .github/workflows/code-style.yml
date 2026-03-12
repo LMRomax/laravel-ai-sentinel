@@ -22,9 +22,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --prefer-stable
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run Laravel Pint
         run: vendor/bin/pint --test

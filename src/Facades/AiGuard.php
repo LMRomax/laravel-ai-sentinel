@@ -3,6 +3,7 @@
 namespace Lmromax\LaravelAiGuard\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use Lmromax\LaravelAiGuard\Services\AiGuardService;
 
 /**
  * @method static \Lmromax\LaravelAiGuard\Models\AiPromptsLog track(array $data)
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static float calculateCost(string $provider, string $model, int $tokensInput, int $tokensOutput)
  * @method static int estimateTokens(string $text)
  *
- * @see \Lmromax\LaravelAiGuard\Services\AiGuardService
+ * @see AiGuardService
  */
 class AiGuard extends Facade
 {

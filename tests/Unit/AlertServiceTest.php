@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiGuard\Notifications\DailyLimitExceeded;
+use Lmromax\LaravelAiGuard\Notifications\MonthlyLimitExceeded;
 use Lmromax\LaravelAiGuard\Services\AlertService;
 
 beforeEach(function () {
@@ -41,7 +43,7 @@ describe('AlertService', function () {
         $this->service->checkLimits();
 
         Notification::assertSentTimes(
-            \Lmromax\LaravelAiGuard\Notifications\DailyLimitExceeded::class,
+            DailyLimitExceeded::class,
             1
         );
     });
@@ -67,7 +69,7 @@ describe('AlertService', function () {
 
         // Should only send once
         Notification::assertSentTimes(
-            \Lmromax\LaravelAiGuard\Notifications\DailyLimitExceeded::class,
+            DailyLimitExceeded::class,
             1
         );
     });
@@ -90,7 +92,7 @@ describe('AlertService', function () {
         $this->service->checkLimits();
 
         Notification::assertSentTimes(
-            \Lmromax\LaravelAiGuard\Notifications\MonthlyLimitExceeded::class,
+            MonthlyLimitExceeded::class,
             1
         );
     });

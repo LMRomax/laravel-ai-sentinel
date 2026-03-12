@@ -2,7 +2,9 @@
 
 namespace Lmromax\LaravelAiGuard\Services;
 
+use Anthropic\Laravel\Facades\Anthropic;
 use Illuminate\Support\Facades\Log;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class PromptOptimizer
 {
@@ -86,8 +88,8 @@ class PromptOptimizer
         $model = config('ai-guard.optimization.compression_model', 'gpt-4o-mini');
 
         // OpenAI compression
-        if ($provider === 'openai' && class_exists(\OpenAI\Laravel\Facades\OpenAI::class)) {
-            $response = \OpenAI\Laravel\Facades\OpenAI::chat()->create([
+        if ($provider === 'openai' && class_exists(OpenAI::class)) {
+            $response = OpenAI::chat()->create([
                 'model' => $model,
                 'messages' => [
                     [
@@ -112,8 +114,8 @@ class PromptOptimizer
         }
 
         // Anthropic compression
-        if ($provider === 'anthropic' && class_exists(\Anthropic\Laravel\Facades\Anthropic::class)) {
-            $response = \Anthropic\Laravel\Facades\Anthropic::messages()->create([
+        if ($provider === 'anthropic' && class_exists(Anthropic::class)) {
+            $response = Anthropic::messages()->create([
                 'model' => $model,
                 'max_tokens' => (int) ceil($this->costCalculator->estimateTokens($text) * 0.8),
                 'messages' => [

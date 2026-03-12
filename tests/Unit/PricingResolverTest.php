@@ -52,7 +52,7 @@ describe('PricingResolver', function () {
         config(['ai-guard.unknown_model_strategy' => 'fail']);
 
         expect(fn () => $this->resolver->resolve('unknown', 'unknown-model'))
-            ->toThrow(\RuntimeException::class);
+            ->toThrow(RuntimeException::class);
     });
 
     it('estimates pricing when strategy is estimate', function () {

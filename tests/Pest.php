@@ -1,5 +1,7 @@
 <?php
 
+use Lmromax\LaravelAiGuard\Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -12,7 +14,7 @@
 */
 
 uses(
-    Lmromax\LaravelAiGuard\Tests\TestCase::class,
+    TestCase::class,
 )->in('Feature', 'Unit');
 
 /*
