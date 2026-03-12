@@ -100,5 +100,6 @@ class AiGuardServiceProvider extends ServiceProvider
         Livewire::component('ai-guard.top-models', \Lmromax\LaravelAiGuard\Http\Livewire\TopModels::class);
         Livewire::component('ai-guard.recent-logs', \Lmromax\LaravelAiGuard\Http\Livewire\RecentLogs::class);
         Livewire::component('ai-guard.prompt-optimizer', \Lmromax\LaravelAiGuard\Http\Livewire\PromptOptimizer::class);
+        Livewire::component('ai-guard.historical-chart', \Lmromax\LaravelAiGuard\Http\Livewire\HistoricalChart::class);
     }
 }

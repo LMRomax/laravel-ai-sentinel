@@ -131,11 +131,15 @@
             <livewire:ai-guard.top-models />
         </div>
 
+        <!-- Historical Trend -->
+        <div class="mb-8">
+            <livewire:ai-guard.historical-chart />
+        </div>
+
         <!-- Recent Logs -->
         <div>
             <livewire:ai-guard.recent-logs />
         </div>
-
     </main>
 
     <!-- Footer -->
@@ -147,6 +151,7 @@
         </div>
     </footer>
 
+    @stack('scripts')
     @livewireScripts
 </body>
 
