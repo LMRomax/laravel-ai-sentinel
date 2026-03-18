@@ -8,16 +8,18 @@
 
 **Track, optimize and control your AI API costs in Laravel.**
 
-Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthropic, Groq, Google, Mistral...) with prompt logging, cost calculation, optimization tools and spending alerts.
+Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthropic, Groq, Google, Mistral...) with a beautiful real-time dashboard, prompt logging, cost calculation, AI-powered optimization and spending alerts.
 
 ---
 
 ## ✨ Features
 
+- 📊 **Real-time Dashboard** — Beautiful Livewire dashboard with cost analytics and historical trends
 - 💰 **Cost tracking** — Automatic cost calculation per request (input + output tokens)
-- 📊 **Statistics** — Daily, weekly, monthly cost reports per provider and model
-- 🔔 **Alerts** — Get notified when you exceed your spending limits
-- ⚡ **Prompt optimization** — Reduce token usage with automatic compression
+- 🤖 **AI-powered optimization** — Intelligent prompt compression using GPT-4o-mini (saves up to 70% tokens)
+- 📈 **Analytics** — Daily/monthly reports, provider breakdown, top models, historical charts (3M/6M/12M)
+- 🔔 **Alerts** — Email notifications when you exceed spending limits
+- 🧪 **Optimizer UI** — Interactive tool to test prompt compression with before/after comparison
 - 🔄 **Auto-sync pricing** — Always up-to-date pricing from a maintained remote source
 - 🛠️ **Artisan commands** — Manage and inspect your AI usage from the CLI
 - 🧩 **Provider agnostic** — Works with any AI provider
@@ -28,6 +30,7 @@ Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthro
 
 - PHP 8.2+
 - Laravel 11.0+ or 12.0+
+- Livewire 3.0+
 
 ---
 
@@ -37,17 +40,29 @@ Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthro
 composer require lmromax/laravel-ai-guard
 ```
 
-### Publish config
+### Quick install (recommended)
 
 ```bash
-php artisan vendor:publish --tag=ai-guard-config
+php artisan ai-guard:install
 ```
 
-### Publish and run migrations
+This will:
+- Publish config file
+- Publish and run migrations
+- Publish views (optional)
+
+### Manual installation
 
 ```bash
+# Publish config
+php artisan vendor:publish --tag=ai-guard-config
+
+# Publish and run migrations
 php artisan vendor:publish --tag=ai-guard-migrations
 php artisan migrate
+
+# (Optional) Publish views for customization
+php artisan vendor:publish --tag=ai-guard-views
 ```
 
 ---
@@ -57,8 +72,20 @@ php artisan migrate
 Add the following variables to your `.env` file:
 
 ```env
+# Enable tracking
 AI_GUARD_ENABLED=true
 AI_GUARD_AUTO_SYNC=true
+
+# Spending alerts
+AI_GUARD_ALERTS_ENABLED=true
+AI_GUARD_DAILY_LIMIT=100
+AI_GUARD_MONTHLY_LIMIT=1000
+AI_GUARD_ALERT_EMAILS=admin@example.com,billing@example.com
+
+# AI-powered prompt compression (optional but recommended)
+AI_GUARD_USE_AI_COMPRESSION=true
+AI_GUARD_COMPRESSION_PROVIDER=openai
+AI_GUARD_COMPRESSION_MODEL=gpt-4o-mini
 
 # API Keys (only for providers you use)
 OPENAI_API_KEY=sk-...
@@ -66,21 +93,60 @@ ANTHROPIC_API_KEY=sk-ant-...
 GROQ_API_KEY=gsk_...
 GOOGLE_AI_API_KEY=...
 MISTRAL_API_KEY=...
-
-# Spending alerts
-AI_GUARD_ALERTS_ENABLED=true
-AI_GUARD_DAILY_LIMIT=100
-AI_GUARD_MONTHLY_LIMIT=1000
-
-# Prompt optimization
-AI_GUARD_OPTIMIZATION_ENABLED=true
 ```
+
+---
+
+## 📊 Dashboard
+
+Access the beautiful real-time dashboard at:
+
+```
+http://your-app.com/ai-guard
+```
+
+**Features:**
+- Today's spending & monthly totals
+- Cost charts (last 30 days)
+- Provider breakdown (pie chart)
+- Top models by cost (with medals 🥇🥈🥉)
+- Historical trends (3M/6M/12M interactive charts)
+- Recent activity logs
+- Monthly limit progress bar
+
+---
+
+## 🧪 Prompt Optimizer
+
+Test prompt compression in real-time at:
+
+```
+http://your-app.com/ai-guard/optimizer
+```
+
+**Features:**
+- Before/after comparison
+- Token count (original vs optimized)
+- Compression ratio percentage
+- Estimated cost savings
+- Copy optimized prompt button
 
 ---
 
 ## 📖 Usage
 
-### Track an AI request
+### Auto-tracking with Facades (recommended)
+
+```php
+use Lmromax\LaravelAiGuard\Facades\AI;
+
+// Automatically optimizes and tracks in one call
+$response = AI::openai('gpt-4o', 'Your prompt here');
+$response = AI::anthropic('claude-3-5-sonnet-20241022', 'Your prompt');
+$response = AI::groq('llama-3.3-70b-versatile', 'Your prompt');
+```
+
+### Manual tracking
 
 ```php
 use Lmromax\LaravelAiGuard\Facades\AiGuard;
@@ -105,15 +171,21 @@ $result = AiGuard::optimize('Please can you help me to explain what Laravel is ?
 // Returns:
 // [
 //     'original'          => 'Please can you help me to explain what Laravel is ?',
-//     'optimized'         => 'Help me explain what Laravel is?',
+//     'optimized'         => 'Explain what Laravel is',
 //     'tokens_original'   => 14,
-//     'tokens_optimized'  => 8,
-//     'tokens_saved'      => 6,
-//     'compression_ratio' => 42.86,
+//     'tokens_optimized'  => 5,
+//     'tokens_saved'      => 9,
+//     'compression_ratio' => 64.29,
 // ]
 
 // Use the optimized prompt
 $response = $yourAiClient->send($result['optimized']);
+```
+
+**Note:** AI-powered compression requires `openai-php/laravel` package:
+
+```bash
+composer require openai-php/laravel
 ```
 
 ### Get cost statistics
@@ -170,7 +242,7 @@ $tokens = AiGuard::estimateTokens('Hello, how are you today?');
 
 ## 🔄 Pricing Sync
 
-Laravel AI Guard automatically fetches up-to-date pricing from a maintained remote source every 24 hours.
+Laravel AI Guard automatically fetches up-to-date pricing from [lmromax/ai-pricing-data](https://github.com/lmromax/ai-pricing-data) every 24 hours.
 
 ### Manual sync
 
@@ -210,7 +282,7 @@ use Lmromax\LaravelAiGuard\Facades\AiGuard;
 
 public function askAi(string $question): string
 {
-    // 1. Optimize the prompt
+    // 1. Optimize the prompt (AI-powered compression)
     $optimized = AiGuard::optimize($question);
 
     $start = microtime(true);
@@ -240,6 +312,18 @@ public function askAi(string $question): string
     ]);
 
     return $response->choices[0]->message->content;
+}
+```
+
+**Or use the auto-tracking facade (even simpler):**
+
+```php
+use Lmromax\LaravelAiGuard\Facades\AI;
+
+public function askAi(string $question): string
+{
+    // Automatically optimizes + tracks in one call
+    return AI::openai('gpt-4o', $question);
 }
 ```
 
@@ -290,9 +374,19 @@ Configure spending limits in your `.env`:
 ```env
 AI_GUARD_DAILY_LIMIT=50      # Alert when daily spend exceeds $50
 AI_GUARD_MONTHLY_LIMIT=500   # Alert when monthly spend exceeds $500
+AI_GUARD_ALERT_EMAILS=admin@example.com,billing@example.com
 ```
 
 Alerts are sent via Laravel's notification system. Supported channels: `mail`, `slack`, `discord`.
+
+**Customize notifications:**
+
+Publish notification views:
+```bash
+php artisan vendor:publish --tag=ai-guard-views
+```
+
+Edit `resources/views/vendor/ai-guard/notifications/`.
 
 ---
 
@@ -300,9 +394,12 @@ Alerts are sent via Laravel's notification system. Supported channels: `mail`, `
 
 | Command | Description |
 |---|---|
+| `ai-guard:install` | Quick install (config + migrations) |
 | `ai-guard:sync-pricing` | Sync pricing from remote source |
 | `ai-guard:sync-pricing --force` | Force refresh cache |
 | `ai-guard:sync-pricing --show` | Display all available models |
+| `ai-guard:cost-summary` | Display cost summary in terminal |
+| `ai-guard:cleanup` | Clear old logs (90+ days) |
 
 ---
 
@@ -321,6 +418,55 @@ Alerts are sent via Laravel's notification system. Supported channels: `mail`, `
 
 ---
 
+## 🎨 Customization
+
+### Customize dashboard views
+
+```bash
+php artisan vendor:publish --tag=ai-guard-views
+```
+
+Views are published to `resources/views/vendor/ai-guard/`.
+
+### Customize routes
+
+Add to your `routes/web.php`:
+
+```php
+use Lmromax\LaravelAiGuard\Http\Controllers\DashboardController;
+
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/my-custom-path', [DashboardController::class, 'index']);
+});
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+composer test
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
 ## 📜 License
 
 MIT — [Maxence Lemaitre](https://github.com/LMRomax)
+
+---
+
+## 🙏 Credits
+
+- **Pricing Data:** Automatically synced from [lmromax/ai-pricing-data](https://github.com/lmromax/ai-pricing-data)
+- **Built with:** Laravel, Livewire, Chart.js, Tailwind CSS
+
+---
+
+**Made with ❤️ for the Laravel community**
