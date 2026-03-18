@@ -1,10 +1,10 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Services\PromptOptimizer;
+use Lmromax\LaravelAiSentinel\Services\PromptOptimizer;
 
 beforeEach(function () {
     // Disable AI compression
-    config(['ai-guard.optimization.use_ai_compression' => false]);
+    config(['ai-sentinel.optimization.use_ai_compression' => false]);
 
     $this->optimizer = new PromptOptimizer;
 });
@@ -26,7 +26,7 @@ describe('PromptOptimizer', function () {
     });
 
     it('returns original when optimization is disabled', function () {
-        config(['ai-guard.optimization.enabled' => false]);
+        config(['ai-sentinel.optimization.enabled' => false]);
 
         $prompt = 'Please can you help me understand Laravel?';
         $result = $this->optimizer->optimize($prompt);

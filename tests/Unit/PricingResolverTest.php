@@ -1,6 +1,6 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Services\PricingResolver;
+use Lmromax\LaravelAiSentinel\Services\PricingResolver;
 
 beforeEach(function () {
     $this->resolver = new PricingResolver;
@@ -29,11 +29,11 @@ describe('PricingResolver', function () {
     it('falls back to default pricing for unknown model', function () {
         $pricing = $this->resolver->resolve('unknown-provider', 'unknown-model');
 
-        expect($pricing)->toBe(config('ai-guard.default_pricing'));
+        expect($pricing)->toBe(config('ai-sentinel.default_pricing'));
     });
 
     it('resolves custom model pricing', function () {
-        config(['ai-guard.custom_models' => [
+        config(['ai-sentinel.custom_models' => [
             'my-provider' => [
                 'my-model' => [
                     'input' => 0.05,
@@ -49,14 +49,14 @@ describe('PricingResolver', function () {
     });
 
     it('throws exception when strategy is fail', function () {
-        config(['ai-guard.unknown_model_strategy' => 'fail']);
+        config(['ai-sentinel.unknown_model_strategy' => 'fail']);
 
         expect(fn () => $this->resolver->resolve('unknown', 'unknown-model'))
             ->toThrow(RuntimeException::class);
     });
 
     it('estimates pricing when strategy is estimate', function () {
-        config(['ai-guard.unknown_model_strategy' => 'estimate']);
+        config(['ai-sentinel.unknown_model_strategy' => 'estimate']);
 
         $pricing = $this->resolver->resolve('openai', 'gpt-4-future');
 

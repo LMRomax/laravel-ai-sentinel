@@ -1,6 +1,6 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Tests\TestCase;
+use Lmromax\LaravelAiSentinel\Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------

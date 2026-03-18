@@ -117,28 +117,28 @@
 
         <!-- Stats Cards -->
         <div class="mb-8">
-            <livewire:ai-guard.stats-cards />
+            <livewire:ai-sentinel.stats-cards />
         </div>
 
         <!-- Charts Row -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <livewire:ai-guard.cost-chart />
-            <livewire:ai-guard.provider-chart />
+            <livewire:ai-sentinel.cost-chart />
+            <livewire:ai-sentinel.provider-chart />
         </div>
 
         <!-- Top Models -->
         <div class="mb-8">
-            <livewire:ai-guard.top-models />
+            <livewire:ai-sentinel.top-models />
         </div>
 
         <!-- Historical Trend -->
         <div class="mb-8">
-            <livewire:ai-guard.historical-chart />
+            <livewire:ai-sentinel.historical-chart />
         </div>
 
         <!-- Recent Logs -->
         <div>
-            <livewire:ai-guard.recent-logs />
+            <livewire:ai-sentinel.recent-logs />
         </div>
     </main>
 

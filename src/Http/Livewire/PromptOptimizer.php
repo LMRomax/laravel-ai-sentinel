@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Livewire;
+namespace Lmromax\LaravelAiSentinel\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 class PromptOptimizer extends Component
 {
@@ -24,7 +24,7 @@ class PromptOptimizer extends Component
         $this->isOptimizing = true;
 
         // Optimize the prompt
-        $this->result = AiGuard::optimize($this->prompt);
+        $this->result = AiSentinel::optimize($this->prompt);
 
         $this->isOptimizing = false;
     }
@@ -43,6 +43,6 @@ class PromptOptimizer extends Component
 
     public function render()
     {
-        return view('ai-guard::livewire.prompt-optimizer');
+        return view('ai-sentinel::livewire.prompt-optimizer');
     }
 }

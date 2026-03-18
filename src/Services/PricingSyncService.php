@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +17,7 @@ class PricingSyncService
     public function __construct()
     {
         $this->pricingUrl = config(
-            'ai-guard.pricing_source_url',
+            'ai-sentinel.pricing_source_url',
             'https://raw.githubusercontent.com/LMRomax/ai-pricing-data/master/pricing.json'
         );
     }

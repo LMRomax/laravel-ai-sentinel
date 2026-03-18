@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Tests;
+namespace Lmromax\LaravelAiSentinel\Tests;
 
 use Livewire\LivewireServiceProvider;
-use Lmromax\LaravelAiGuard\AiGuardServiceProvider;
+use Lmromax\LaravelAiSentinel\AiSentinelServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -17,7 +17,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            AiGuardServiceProvider::class,
+            AiSentinelServiceProvider::class,
             LivewireServiceProvider::class,
         ];
     }
@@ -34,29 +34,29 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        // Setup ai-guard config
-        $app['config']->set('ai-guard.enabled', true);
+        // Setup ai-sentinel config
+        $app['config']->set('ai-sentinel.enabled', true);
 
         // IMPORTANT : Désactive auto-sync en tests
-        $app['config']->set('ai-guard.auto_sync_pricing', false);
+        $app['config']->set('ai-sentinel.auto_sync_pricing', false);
 
-        $app['config']->set('ai-guard.table_name', 'ai_prompt_logs');
-        $app['config']->set('ai-guard.default_pricing', [
+        $app['config']->set('ai-sentinel.table_name', 'ai_prompt_logs');
+        $app['config']->set('ai-sentinel.default_pricing', [
             'input' => 0.001,
             'output' => 0.003,
         ]);
-        $app['config']->set('ai-guard.unknown_model_strategy', 'use_default');
-        $app['config']->set('ai-guard.optimization', [
+        $app['config']->set('ai-sentinel.unknown_model_strategy', 'use_default');
+        $app['config']->set('ai-sentinel.optimization', [
             'enabled' => true,
             'max_context_tokens' => 4000,
             'enable_compression' => true,
             'cache_responses' => false,
             'cache_ttl' => 3600,
         ]);
-        $app['config']->set('ai-guard.custom_models', []);
+        $app['config']->set('ai-sentinel.custom_models', []);
 
         // IMPORTANT : Définis les providers pour les tests
-        $app['config']->set('ai-guard.providers', [
+        $app['config']->set('ai-sentinel.providers', [
             'openai' => [
                 'models' => [
                     'gpt-4o' => [

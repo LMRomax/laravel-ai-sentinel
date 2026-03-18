@@ -1,8 +1,8 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Traits;
+namespace Lmromax\LaravelAiSentinel\Traits;
 
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 trait TracksAiRequests
 {
@@ -20,7 +20,7 @@ trait TracksAiRequests
         $startTime = microtime(true);
 
         // Step 1: Optimize the prompt if enabled
-        $optimized = AiGuard::optimize($prompt);
+        $optimized = AiSentinel::optimize($prompt);
         $finalPrompt = $optimized['optimized'];
 
         // Step 2: Make the actual AI call
@@ -30,7 +30,7 @@ trait TracksAiRequests
         $duration = (int) ((microtime(true) - $startTime) * 1000);
 
         // Step 4: Track the request
-        AiGuard::track([
+        AiSentinel::track([
             'provider' => $provider,
             'model' => $model,
             'prompt' => $finalPrompt,
@@ -42,7 +42,7 @@ trait TracksAiRequests
             'metadata' => [
                 'original_prompt_tokens' => $optimized['tokens_original'],
                 'tokens_saved' => $optimized['tokens_saved'],
-                'optimization_enabled' => config('ai-guard.optimization.enabled', true),
+                'optimization_enabled' => config('ai-sentinel.optimization.enabled', true),
             ],
         ]);
 

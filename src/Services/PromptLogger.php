@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
 class PromptLogger
 {
@@ -22,7 +22,7 @@ class PromptLogger
      */
     public function log(array $data): AiPromptsLog
     {
-        if (! config('ai-guard.enabled', true)) {
+        if (! config('ai-sentinel.enabled', true)) {
             return new AiPromptsLog; // Return empty model if disabled
         }
 

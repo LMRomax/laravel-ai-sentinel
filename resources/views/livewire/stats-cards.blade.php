@@ -87,7 +87,7 @@
     <!-- Monthly Limit -->
     <div class="stat-card relative overflow-hidden bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
         @php
-            $limit = config('ai-guard.alerts.monthly_limit', 1000);
+            $limit = config('ai-sentinel.alerts.monthly_limit', 1000);
             $percentage = $limit > 0 ? ($monthCostRaw / $limit) * 100 : 0;
             $isWarning = $percentage > 80;
         @endphp

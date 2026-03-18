@@ -1,13 +1,13 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Console\Commands;
+namespace Lmromax\LaravelAiSentinel\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lmromax\LaravelAiGuard\Services\PricingSyncService;
+use Lmromax\LaravelAiSentinel\Services\PricingSyncService;
 
 class SyncPricingCommand extends Command
 {
-    protected $signature = 'ai-guard:sync-pricing
+    protected $signature = 'ai-sentinel:sync-pricing
                             {--force : Force refresh, ignore cache}
                             {--show : Display all available models after sync}';
 
@@ -31,7 +31,7 @@ class SyncPricingCommand extends Command
         if (! $pricing) {
             $this->error('');
             $this->error('❌ Failed to fetch pricing data.');
-            $this->error('   Check your internet connection or pricing_source_url in config/ai-guard.php');
+            $this->error('   Check your internet connection or pricing_source_url in config/ai-sentinel.php');
             $this->info('');
 
             return self::FAILURE;
@@ -42,7 +42,7 @@ class SyncPricingCommand extends Command
         $this->info('✅ Pricing synced successfully!');
         $this->info('   Last updated : '.($pricing['last_updated'] ?? 'unknown'));
         $this->info('   Version      : '.($pricing['version'] ?? 'unknown'));
-        $this->info('   Source       : '.config('ai-guard.pricing_source_url'));
+        $this->info('   Source       : '.config('ai-sentinel.pricing_source_url'));
         $this->info('');
 
         // Tableau des providers

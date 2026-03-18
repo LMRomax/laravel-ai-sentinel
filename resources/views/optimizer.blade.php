@@ -26,7 +26,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-4">
-                    <a href="/ai-guard" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                    <a href="/ai-sentinel" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
                         <div class="relative">
                             <div
                                 class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-75">
@@ -48,11 +48,11 @@
                     </a>
 
                     <div class="hidden md:flex items-center space-x-1 ml-6">
-                        <a href="/ai-guard"
+                        <a href="/ai-sentinel"
                             class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
                             Dashboard
                         </a>
-                        <a href="/ai-guard/optimizer"
+                        <a href="/ai-sentinel/optimizer"
                             class="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg">
                             Optimizer
                         </a>
@@ -72,7 +72,7 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <livewire:ai-guard.prompt-optimizer />
+        <livewire:ai-sentinel.prompt-optimizer />
     </main>
 
     @livewireScripts

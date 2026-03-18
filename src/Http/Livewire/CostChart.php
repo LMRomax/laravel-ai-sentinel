@@ -1,10 +1,10 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Livewire;
+namespace Lmromax\LaravelAiSentinel\Http\Livewire;
 
 use Carbon\Carbon;
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
 class CostChart extends Component
 {
@@ -56,6 +56,6 @@ class CostChart extends Component
 
     public function render()
     {
-        return view('ai-guard::livewire.cost-chart');
+        return view('ai-sentinel::livewire.cost-chart');
     }
 }

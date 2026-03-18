@@ -1,10 +1,10 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Livewire;
+namespace Lmromax\LaravelAiSentinel\Http\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
 class RecentLogs extends Component
 {
@@ -16,7 +16,7 @@ class RecentLogs extends Component
             ->latest()
             ->paginate(20);
 
-        return view('ai-guard::livewire.recent-logs', [
+        return view('ai-sentinel::livewire.recent-logs', [
             'logs' => $logs,
         ]);
     }

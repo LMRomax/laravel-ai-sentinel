@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Lmromax\LaravelAiGuard\Services\PricingSyncService;
+use Lmromax\LaravelAiSentinel\Services\PricingSyncService;
 
 beforeEach(function () {
     Cache::flush();

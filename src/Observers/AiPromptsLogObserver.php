@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Observers;
+namespace Lmromax\LaravelAiSentinel\Observers;
 
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Services\AlertService;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Services\AlertService;
 
 class AiPromptsLogObserver
 {

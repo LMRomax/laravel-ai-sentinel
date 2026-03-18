@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('ai-guard.table_name', 'ai_prompt_logs'), function (Blueprint $table) {
+        Schema::create(config('ai-sentinel.table_name', 'ai_prompt_logs'), function (Blueprint $table) {
             $table->id();
             $table->string('provider')->index();              // openai, anthropic, groq, etc.
             $table->string('model')->index();                 // gpt-4o, claude-3-5-sonnet, etc.
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(config('ai-guard.table_name', 'ai_prompt_logs'));
+        Schema::dropIfExists(config('ai-sentinel.table_name', 'ai_prompt_logs'));
     }
 };

@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Facades;
+namespace Lmromax\LaravelAiSentinel\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lmromax\LaravelAiGuard\Services\AiRequestService;
+use Lmromax\LaravelAiSentinel\Services\AiRequestService;
 
 /**
  * @method static array openai(string $model, string $prompt, array $options = [])

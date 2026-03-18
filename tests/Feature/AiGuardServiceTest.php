@@ -1,16 +1,16 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
 beforeEach(function () {
     $this->artisan('migrate');
 });
 
-describe('AiGuard Facade', function () {
+describe('AiSentinel Facade', function () {
 
     it('tracks a request via facade', function () {
-        AiGuard::track([
+        AiSentinel::track([
             'provider' => 'openai',
             'model' => 'gpt-4o',
             'prompt' => 'Hello!',
@@ -23,7 +23,7 @@ describe('AiGuard Facade', function () {
     });
 
     it('optimizes a prompt via facade', function () {
-        $result = AiGuard::optimize('Please can you help me understand Laravel?');
+        $result = AiSentinel::optimize('Please can you help me understand Laravel?');
 
         expect($result)->toHaveKeys([
             'original',
@@ -34,19 +34,19 @@ describe('AiGuard Facade', function () {
     });
 
     it('calculates cost via facade', function () {
-        $cost = AiGuard::calculateCost('openai', 'gpt-4o', 1000, 1000);
+        $cost = AiSentinel::calculateCost('openai', 'gpt-4o', 1000, 1000);
 
         expect($cost)->toBe(0.0125);
     });
 
     it('estimates tokens via facade', function () {
-        $tokens = AiGuard::estimateTokens('Hello world');
+        $tokens = AiSentinel::estimateTokens('Hello world');
 
         expect($tokens)->toBeInt()->toBeGreaterThan(0);
     });
 
     it('returns cost stats via facade', function () {
-        AiGuard::track([
+        AiSentinel::track([
             'provider' => 'openai',
             'model' => 'gpt-4o',
             'prompt' => 'Test',
@@ -54,7 +54,7 @@ describe('AiGuard Facade', function () {
             'tokens_output' => 300,
         ]);
 
-        $stats = AiGuard::getCostStats('day');
+        $stats = AiSentinel::getCostStats('day');
 
         expect($stats)->toHaveKeys([
             'total_requests',
@@ -70,7 +70,7 @@ describe('AiGuard Facade', function () {
     });
 
     it('returns total cost via facade', function () {
-        AiGuard::track([
+        AiSentinel::track([
             'provider' => 'openai',
             'model' => 'gpt-4o',
             'prompt' => 'Test',
@@ -78,7 +78,7 @@ describe('AiGuard Facade', function () {
             'tokens_output' => 1000,
         ]);
 
-        $cost = AiGuard::getTotalCost('month');
+        $cost = AiSentinel::getTotalCost('month');
 
         expect($cost)->toBeNumeric()->toBeGreaterThan(0);
     });

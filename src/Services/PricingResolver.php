@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Illuminate\Support\Facades\Log;
 
@@ -38,21 +38,21 @@ class PricingResolver
             Log::info("AI Guard: Model [{$provider}/{$model}] not found in remote pricing, falling back.");
         }
 
-        $configPricing = config("ai-guard.providers.{$provider}.models.{$model}");
+        $configPricing = config("ai-sentinel.providers.{$provider}.models.{$model}");
 
         if ($configPricing) {
             return $configPricing;
         }
 
         // Custom models définis par l'utilisateur
-        $customPricing = config("ai-guard.custom_models.{$provider}.{$model}");
+        $customPricing = config("ai-sentinel.custom_models.{$provider}.{$model}");
 
         if ($customPricing) {
             return $customPricing;
         }
 
         // Stratégie de fallback
-        $strategy = config('ai-guard.unknown_model_strategy', 'use_default');
+        $strategy = config('ai-sentinel.unknown_model_strategy', 'use_default');
 
         if ($strategy === 'estimate') {
             return $this->estimatePricing($provider, $model);
@@ -62,7 +62,7 @@ class PricingResolver
             $this->throwUnknownModelException($provider, $model);
         }
 
-        return config('ai-guard.default_pricing');
+        return config('ai-sentinel.default_pricing');
     }
 
     /**
@@ -107,7 +107,7 @@ class PricingResolver
 
         Log::warning("AI Guard: Could not estimate pricing for [{$provider}/{$model}], using default.");
 
-        return config('ai-guard.default_pricing');
+        return config('ai-sentinel.default_pricing');
     }
 
     /**
@@ -120,7 +120,7 @@ class PricingResolver
     {
         throw new \RuntimeException(
             "AI Guard: Unknown model [{$provider}/{$model}]. ".
-                "Add it to 'custom_models' in config/ai-guard.php or change 'unknown_model_strategy'."
+                "Add it to 'custom_models' in config/ai-sentinel.php or change 'unknown_model_strategy'."
         );
     }
 }

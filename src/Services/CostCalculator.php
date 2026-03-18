@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 class CostCalculator
 {

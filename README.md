@@ -1,14 +1,14 @@
-# 🤖 Laravel AI Guard
+# 🤖 Laravel AI Sentinel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/lmromax/laravel-ai-guard.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-guard)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/lmromax/laravel-ai-guard/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/lmromax/laravel-ai-guard/actions?query=workflow%3Atests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lmromax/laravel-ai-guard/code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lmromax/laravel-ai-guard/actions?query=workflow%3A"code-style"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/lmromax/laravel-ai-guard.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-guard)
-[![License](https://img.shields.io/packagist/l/lmromax/laravel-ai-guard.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-guard)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/lmromax/laravel-ai-sentinel.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-sentinel)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/lmromax/laravel-ai-sentinel/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/lmromax/laravel-ai-sentinel/actions?query=workflow%3Atests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/lmromax/laravel-ai-sentinel/code-style.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/lmromax/laravel-ai-sentinel/actions?query=workflow%3A"code-style"+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/lmromax/laravel-ai-sentinel.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-sentinel)
+[![License](https://img.shields.io/packagist/l/lmromax/laravel-ai-sentinel.svg?style=flat-square)](https://packagist.org/packages/lmromax/laravel-ai-sentinel)
 
 **Track, optimize and control your AI API costs in Laravel.**
 
-Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthropic, Groq, Google, Mistral...) with a beautiful real-time dashboard, prompt logging, cost calculation, AI-powered optimization and spending alerts.
+Laravel AI Sentinel gives you full visibility over your AI spending (OpenAI, Anthropic, Groq, Google, Mistral...) with a beautiful real-time dashboard, prompt logging, cost calculation, AI-powered optimization and spending alerts.
 
 ---
 
@@ -37,13 +37,13 @@ Laravel AI Guard gives you full visibility over your AI spending (OpenAI, Anthro
 ## 🚀 Installation
 
 ```bash
-composer require lmromax/laravel-ai-guard
+composer require lmromax/laravel-ai-sentinel
 ```
 
 ### Quick install (recommended)
 
 ```bash
-php artisan ai-guard:install
+php artisan ai-sentinel:install
 ```
 
 This will:
@@ -55,14 +55,14 @@ This will:
 
 ```bash
 # Publish config
-php artisan vendor:publish --tag=ai-guard-config
+php artisan vendor:publish --tag=ai-sentinel-config
 
 # Publish and run migrations
-php artisan vendor:publish --tag=ai-guard-migrations
+php artisan vendor:publish --tag=ai-sentinel-migrations
 php artisan migrate
 
 # (Optional) Publish views for customization
-php artisan vendor:publish --tag=ai-guard-views
+php artisan vendor:publish --tag=ai-sentinel-views
 ```
 
 ---
@@ -102,7 +102,7 @@ MISTRAL_API_KEY=...
 Access the beautiful real-time dashboard at:
 
 ```
-http://your-app.com/ai-guard
+http://your-app.com/ai-sentinel
 ```
 
 **Features:**
@@ -121,7 +121,7 @@ http://your-app.com/ai-guard
 Test prompt compression in real-time at:
 
 ```
-http://your-app.com/ai-guard/optimizer
+http://your-app.com/ai-sentinel/optimizer
 ```
 
 **Features:**
@@ -138,7 +138,7 @@ http://your-app.com/ai-guard/optimizer
 ### Auto-tracking with Facades (recommended)
 
 ```php
-use Lmromax\LaravelAiGuard\Facades\AI;
+use Lmromax\LaravelAiSentinel\Facades\AI;
 
 // Automatically optimizes and tracks in one call
 $response = AI::openai('gpt-4o', 'Your prompt here');
@@ -149,10 +149,10 @@ $response = AI::groq('llama-3.3-70b-versatile', 'Your prompt');
 ### Manual tracking
 
 ```php
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 // After calling your AI provider, track the request
-AiGuard::track([
+AiSentinel::track([
     'provider'      => 'anthropic',
     'model'         => 'claude-3-5-sonnet-20241022',
     'prompt'        => 'Explain Laravel in 50 words',
@@ -166,7 +166,7 @@ AiGuard::track([
 ### Optimize a prompt before sending
 
 ```php
-$result = AiGuard::optimize('Please can you help me to explain what Laravel is ?');
+$result = AiSentinel::optimize('Please can you help me to explain what Laravel is ?');
 
 // Returns:
 // [
@@ -192,13 +192,13 @@ composer require openai-php/laravel
 
 ```php
 // Today
-$stats = AiGuard::getCostStats('day');
+$stats = AiSentinel::getCostStats('day');
 
 // This week
-$stats = AiGuard::getCostStats('week');
+$stats = AiSentinel::getCostStats('week');
 
 // This month
-$stats = AiGuard::getCostStats('month');
+$stats = AiSentinel::getCostStats('month');
 
 // Returns:
 // [
@@ -215,14 +215,14 @@ $stats = AiGuard::getCostStats('month');
 ### Get total cost
 
 ```php
-$monthlyCost = AiGuard::getTotalCost('month'); // 4.23
-$dailyCost   = AiGuard::getTotalCost('day');   // 0.87
+$monthlyCost = AiSentinel::getTotalCost('month'); // 4.23
+$dailyCost   = AiSentinel::getTotalCost('day');   // 0.87
 ```
 
 ### Calculate cost manually
 
 ```php
-$cost = AiGuard::calculateCost(
+$cost = AiSentinel::calculateCost(
     provider: 'openai',
     model: 'gpt-4o',
     tokensInput: 500,
@@ -234,7 +234,7 @@ $cost = AiGuard::calculateCost(
 ### Estimate tokens
 
 ```php
-$tokens = AiGuard::estimateTokens('Hello, how are you today?');
+$tokens = AiSentinel::estimateTokens('Hello, how are you today?');
 // Returns: ~8
 ```
 
@@ -242,24 +242,24 @@ $tokens = AiGuard::estimateTokens('Hello, how are you today?');
 
 ## 🔄 Pricing Sync
 
-Laravel AI Guard automatically fetches up-to-date pricing from [lmromax/ai-pricing-data](https://github.com/lmromax/ai-pricing-data) every 24 hours.
+Laravel AI Sentinel automatically fetches up-to-date pricing from [lmromax/ai-pricing-data](https://github.com/lmromax/ai-pricing-data) every 24 hours.
 
 ### Manual sync
 
 ```bash
 # Sync pricing
-php artisan ai-guard:sync-pricing
+php artisan ai-sentinel:sync-pricing
 
 # Force refresh cache
-php artisan ai-guard:sync-pricing --force
+php artisan ai-sentinel:sync-pricing --force
 
 # Display all available models
-php artisan ai-guard:sync-pricing --show
+php artisan ai-sentinel:sync-pricing --show
 ```
 
 ### Add a custom model
 
-If your model is not in the remote pricing source, add it to `config/ai-guard.php`:
+If your model is not in the remote pricing source, add it to `config/ai-sentinel.php`:
 
 ```php
 'custom_models' => [
@@ -278,12 +278,12 @@ If your model is not in the remote pricing source, add it to `config/ai-guard.ph
 
 ```php
 use OpenAI\Laravel\Facades\OpenAI;
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 public function askAi(string $question): string
 {
     // 1. Optimize the prompt (AI-powered compression)
-    $optimized = AiGuard::optimize($question);
+    $optimized = AiSentinel::optimize($question);
 
     $start = microtime(true);
 
@@ -298,7 +298,7 @@ public function askAi(string $question): string
     $duration = (int) ((microtime(true) - $start) * 1000);
 
     // 3. Track the request
-    AiGuard::track([
+    AiSentinel::track([
         'provider'      => 'openai',
         'model'         => 'gpt-4o',
         'prompt'        => $optimized['optimized'],
@@ -318,7 +318,7 @@ public function askAi(string $question): string
 **Or use the auto-tracking facade (even simpler):**
 
 ```php
-use Lmromax\LaravelAiGuard\Facades\AI;
+use Lmromax\LaravelAiSentinel\Facades\AI;
 
 public function askAi(string $question): string
 {
@@ -333,11 +333,11 @@ public function askAi(string $question): string
 
 ```php
 use Anthropic\Laravel\Facades\Anthropic;
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 public function askClaude(string $question): string
 {
-    $optimized = AiGuard::optimize($question);
+    $optimized = AiSentinel::optimize($question);
 
     $start = microtime(true);
 
@@ -351,7 +351,7 @@ public function askClaude(string $question): string
 
     $duration = (int) ((microtime(true) - $start) * 1000);
 
-    AiGuard::track([
+    AiSentinel::track([
         'provider'      => 'anthropic',
         'model'         => 'claude-3-5-sonnet-20241022',
         'prompt'        => $optimized['optimized'],
@@ -383,10 +383,10 @@ Alerts are sent via Laravel's notification system. Supported channels: `mail`, `
 
 Publish notification views:
 ```bash
-php artisan vendor:publish --tag=ai-guard-views
+php artisan vendor:publish --tag=ai-sentinel-views
 ```
 
-Edit `resources/views/vendor/ai-guard/notifications/`.
+Edit `resources/views/vendor/ai-sentinel/notifications/`.
 
 ---
 
@@ -394,12 +394,12 @@ Edit `resources/views/vendor/ai-guard/notifications/`.
 
 | Command | Description |
 |---|---|
-| `ai-guard:install` | Quick install (config + migrations) |
-| `ai-guard:sync-pricing` | Sync pricing from remote source |
-| `ai-guard:sync-pricing --force` | Force refresh cache |
-| `ai-guard:sync-pricing --show` | Display all available models |
-| `ai-guard:cost-summary` | Display cost summary in terminal |
-| `ai-guard:cleanup` | Clear old logs (90+ days) |
+| `ai-sentinel:install` | Quick install (config + migrations) |
+| `ai-sentinel:sync-pricing` | Sync pricing from remote source |
+| `ai-sentinel:sync-pricing --force` | Force refresh cache |
+| `ai-sentinel:sync-pricing --show` | Display all available models |
+| `ai-sentinel:cost-summary` | Display cost summary in terminal |
+| `ai-sentinel:cleanup` | Clear old logs (90+ days) |
 
 ---
 
@@ -423,17 +423,17 @@ Edit `resources/views/vendor/ai-guard/notifications/`.
 ### Customize dashboard views
 
 ```bash
-php artisan vendor:publish --tag=ai-guard-views
+php artisan vendor:publish --tag=ai-sentinel-views
 ```
 
-Views are published to `resources/views/vendor/ai-guard/`.
+Views are published to `resources/views/vendor/ai-sentinel/`.
 
 ### Customize routes
 
 Add to your `routes/web.php`:
 
 ```php
-use Lmromax\LaravelAiGuard\Http\Controllers\DashboardController;
+use Lmromax\LaravelAiSentinel\Http\Controllers\DashboardController;
 
 Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/my-custom-path', [DashboardController::class, 'index']);

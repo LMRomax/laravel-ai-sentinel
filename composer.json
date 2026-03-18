@@ -1,6 +1,7 @@
 {
-    "name": "lmromax/laravel-ai-guard",
+    "name": "lmromax/laravel-ai-sentinel",
     "description": "AI prompt optimization and cost tracking for Laravel",
+    "homepage": "https://github.com/lmromax/laravel-ai-sentinel",
     "keywords": [
         "laravel",
         "ai",
@@ -38,21 +39,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Lmromax\\LaravelAiGuard\\": "src/"
+            "Lmromax\\LaravelAiSentinel\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Lmromax\\LaravelAiGuard\\Tests\\": "tests/"
+            "Lmromax\\LaravelAiSentinel\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Lmromax\\LaravelAiGuard\\AiGuardServiceProvider"
+                "Lmromax\\LaravelAiSentinel\\AiSentinelServiceProvider"
             ],
             "aliases": {
-                "AiGuard": "Lmromax\\LaravelAiGuard\\Facades\\AiGuard"
+                "AiSentinel": "Lmromax\\LaravelAiSentinel\\Facades\\AiSentinel"
             }
         }
     },

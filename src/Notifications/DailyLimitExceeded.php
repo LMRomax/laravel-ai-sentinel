@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Notifications;
+namespace Lmromax\LaravelAiSentinel\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -17,7 +17,7 @@ class DailyLimitExceeded extends Notification
 
     public function via($notifiable): array
     {
-        return config('ai-guard.alerts.channels', ['mail']);
+        return config('ai-sentinel.alerts.channels', ['mail']);
     }
 
     public function toMail($notifiable): MailMessage
@@ -32,7 +32,7 @@ class DailyLimitExceeded extends Notification
             ->line('**Current spending:** $'.number_format($this->currentCost, 2))
             ->line('**Daily limit:** $'.number_format($this->limit, 2))
             ->line('**Over budget:** '.number_format($percentage - 100, 1).'%')
-            ->action('View Dashboard', url('/ai-guard'))
+            ->action('View Dashboard', url('/ai-sentinel'))
             ->line('Consider optimizing your prompts or pausing AI features temporarily.');
     }
 

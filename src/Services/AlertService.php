@@ -1,12 +1,12 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Notifications\DailyLimitExceeded;
-use Lmromax\LaravelAiGuard\Notifications\MonthlyLimitExceeded;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Notifications\DailyLimitExceeded;
+use Lmromax\LaravelAiSentinel\Notifications\MonthlyLimitExceeded;
 
 class AlertService
 {
@@ -15,7 +15,7 @@ class AlertService
      */
     public function checkLimits(): void
     {
-        if (! config('ai-guard.alerts.enabled', true)) {
+        if (! config('ai-sentinel.alerts.enabled', true)) {
             return;
         }
 
@@ -28,7 +28,7 @@ class AlertService
      */
     protected function checkDailyLimit(): void
     {
-        $dailyLimit = config('ai-guard.alerts.daily_limit');
+        $dailyLimit = config('ai-sentinel.alerts.daily_limit');
 
         if (! $dailyLimit) {
             return;
@@ -50,7 +50,7 @@ class AlertService
      */
     protected function checkMonthlyLimit(): void
     {
-        $monthlyLimit = config('ai-guard.alerts.monthly_limit');
+        $monthlyLimit = config('ai-sentinel.alerts.monthly_limit');
 
         if (! $monthlyLimit) {
             return;
@@ -74,8 +74,8 @@ class AlertService
      */
     protected function sendAlert($notification): void
     {
-        $channels = config('ai-guard.alerts.channels', ['mail']);
-        $recipients = config('ai-guard.alerts.recipients', []);
+        $channels = config('ai-sentinel.alerts.channels', ['mail']);
+        $recipients = config('ai-sentinel.alerts.recipients', []);
 
         if (empty($recipients)) {
             // Fallback: notify all admins or first user
@@ -113,7 +113,7 @@ class AlertService
      */
     protected function wasNotifiedToday(string $type): bool
     {
-        return Cache::has("ai-guard-alert-{$type}-".now()->format('Y-m-d'));
+        return Cache::has("ai-sentinel-alert-{$type}-".now()->format('Y-m-d'));
     }
 
     /**
@@ -123,7 +123,7 @@ class AlertService
      */
     protected function wasNotifiedThisMonth(): bool
     {
-        return Cache::has('ai-guard-alert-monthly-'.now()->format('Y-m'));
+        return Cache::has('ai-sentinel-alert-monthly-'.now()->format('Y-m'));
     }
 
     /**
@@ -134,9 +134,9 @@ class AlertService
     protected function markAsNotified(string $type): void
     {
         $key = match ($type) {
-            'daily' => 'ai-guard-alert-daily-'.now()->format('Y-m-d'),
-            'monthly' => 'ai-guard-alert-monthly-'.now()->format('Y-m'),
-            default => 'ai-guard-alert-'.$type,
+            'daily' => 'ai-sentinel-alert-daily-'.now()->format('Y-m-d'),
+            'monthly' => 'ai-sentinel-alert-monthly-'.now()->format('Y-m'),
+            default => 'ai-sentinel-alert-'.$type,
         };
 
         // Cache for 24 hours (daily) or 30 days (monthly)

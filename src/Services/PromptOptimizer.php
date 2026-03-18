@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Anthropic\Laravel\Facades\Anthropic;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +20,7 @@ class PromptOptimizer
      */
     public function optimize(string $prompt): array
     {
-        if (! config('ai-guard.optimization.enabled', true)) {
+        if (! config('ai-sentinel.optimization.enabled', true)) {
             return [
                 'original' => $prompt,
                 'optimized' => $prompt,
@@ -53,7 +53,7 @@ class PromptOptimizer
      */
     protected function compress(string $text): string
     {
-        if (! config('ai-guard.optimization.enable_compression', true)) {
+        if (! config('ai-sentinel.optimization.enable_compression', true)) {
             return $text;
         }
 
@@ -63,7 +63,7 @@ class PromptOptimizer
         }
 
         // Use AI-powered compression if available
-        if (config('ai-guard.optimization.use_ai_compression', true)) {
+        if (config('ai-sentinel.optimization.use_ai_compression', true)) {
             try {
                 return $this->aiCompress($text);
             } catch (\Exception $e) {
@@ -84,8 +84,8 @@ class PromptOptimizer
      */
     protected function aiCompress(string $text): string
     {
-        $provider = config('ai-guard.optimization.compression_provider', 'openai');
-        $model = config('ai-guard.optimization.compression_model', 'gpt-4o-mini');
+        $provider = config('ai-sentinel.optimization.compression_provider', 'openai');
+        $model = config('ai-sentinel.optimization.compression_model', 'gpt-4o-mini');
 
         // OpenAI compression
         if ($provider === 'openai' && class_exists(OpenAI::class)) {

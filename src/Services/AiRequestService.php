@@ -1,11 +1,11 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
 use Anthropic\Laravel\Facades\Anthropic;
 use Groq\Laravel\Facades\Groq;
 use Illuminate\Support\Str;
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 class AiRequestService
 {
@@ -59,9 +59,9 @@ class AiRequestService
      * Optimize + Track wrapper
      *
      * This method handles the full lifecycle of an AI request, including:
-     * - Prompt optimization using AiGuard::optimize()
+     * - Prompt optimization using AiSentinel::optimize()
      * - Sending the request to the appropriate provider method
-     * - Tracking the request and response using AiGuard::track()
+     * - Tracking the request and response using AiSentinel::track()
      *
      * @param  string  $provider  The provider name (e.g. 'openai')
      * @param  string  $model  The model name (e.g. 'gpt-4o')
@@ -75,7 +75,7 @@ class AiRequestService
         $start = microtime(true);
 
         // Optimize
-        $optimized = AiGuard::optimize($prompt);
+        $optimized = AiSentinel::optimize($prompt);
         $finalPrompt = $optimized['optimized'];
 
         // Provider request
@@ -85,7 +85,7 @@ class AiRequestService
         $duration = (int) ((microtime(true) - $start) * 1000);
 
         // Track
-        AiGuard::track([
+        AiSentinel::track([
             'provider' => $provider,
             'model' => $model,
             'prompt' => $finalPrompt,

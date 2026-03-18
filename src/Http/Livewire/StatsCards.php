@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Livewire;
+namespace Lmromax\LaravelAiSentinel\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Facades\AiGuard;
+use Lmromax\LaravelAiSentinel\Facades\AiSentinel;
 
 class StatsCards extends Component
 {
@@ -26,8 +26,8 @@ class StatsCards extends Component
 
     public function loadStats()
     {
-        $todayStats = AiGuard::getCostStats('day');
-        $monthStats = AiGuard::getCostStats('month');
+        $todayStats = AiSentinel::getCostStats('day');
+        $monthStats = AiSentinel::getCostStats('month');
 
         $this->todayCost = number_format($todayStats['total_cost'] ?? 0, 2);
         $this->todayRequests = number_format($todayStats['total_requests'] ?? 0);
@@ -41,6 +41,6 @@ class StatsCards extends Component
 
     public function render()
     {
-        return view('ai-guard::livewire.stats-cards');
+        return view('ai-sentinel::livewire.stats-cards');
     }
 }

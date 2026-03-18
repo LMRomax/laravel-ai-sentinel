@@ -14,7 +14,7 @@ beforeEach(function () {
 describe('Optimizer Page', function () {
 
     it('requires authentication', function () {
-        $response = $this->get('/ai-guard/optimizer');
+        $response = $this->get('/ai-sentinel/optimizer');
 
         // Ton package redirige vers /login via le middleware auth
         $response->assertRedirect('/login');
@@ -23,7 +23,7 @@ describe('Optimizer Page', function () {
     it('renders the optimizer page when authenticated', function () {
         $this->actingAs($this->user);
 
-        $response = $this->get('/ai-guard/optimizer');
+        $response = $this->get('/ai-sentinel/optimizer');
 
         $response->assertOk();
         $response->assertSee('Prompt Optimizer');
@@ -32,8 +32,8 @@ describe('Optimizer Page', function () {
     it('loads the Livewire component', function () {
         $this->actingAs($this->user);
 
-        $response = $this->get('/ai-guard/optimizer');
+        $response = $this->get('/ai-sentinel/optimizer');
 
-        $response->assertSeeLivewire('ai-guard.prompt-optimizer');
+        $response->assertSeeLivewire('ai-sentinel.prompt-optimizer');
     });
 });

@@ -1,10 +1,10 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Services;
+namespace Lmromax\LaravelAiSentinel\Services;
 
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
-class AiGuardService
+class AiSentinelService
 {
     public function __construct(
         protected PromptLogger $logger,

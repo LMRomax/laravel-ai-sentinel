@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Controllers;
+namespace Lmromax\LaravelAiSentinel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 
@@ -8,6 +8,6 @@ class OptimizerController extends Controller
 {
     public function index()
     {
-        return view('ai-guard::optimizer');
+        return view('ai-sentinel::optimizer');
     }
 }

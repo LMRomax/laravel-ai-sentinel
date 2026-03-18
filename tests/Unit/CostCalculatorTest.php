@@ -1,6 +1,6 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Services\CostCalculator;
+use Lmromax\LaravelAiSentinel\Services\CostCalculator;
 
 beforeEach(function () {
     $this->calculator = new CostCalculator;

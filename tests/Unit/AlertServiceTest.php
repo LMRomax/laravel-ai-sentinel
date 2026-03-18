@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Notifications\DailyLimitExceeded;
-use Lmromax\LaravelAiGuard\Notifications\MonthlyLimitExceeded;
-use Lmromax\LaravelAiGuard\Services\AlertService;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Notifications\DailyLimitExceeded;
+use Lmromax\LaravelAiSentinel\Notifications\MonthlyLimitExceeded;
+use Lmromax\LaravelAiSentinel\Services\AlertService;
 
 beforeEach(function () {
     $this->artisan('migrate');
@@ -17,7 +17,7 @@ beforeEach(function () {
 describe('AlertService', function () {
 
     it('does not check limits when alerts are disabled', function () {
-        config(['ai-guard.alerts.enabled' => false]);
+        config(['ai-sentinel.alerts.enabled' => false]);
 
         $this->service->checkLimits();
 
@@ -26,8 +26,8 @@ describe('AlertService', function () {
 
     it('sends alert when daily limit is exceeded', function () {
         config([
-            'ai-guard.alerts.enabled' => true,
-            'ai-guard.alerts.daily_limit' => 10,
+            'ai-sentinel.alerts.enabled' => true,
+            'ai-sentinel.alerts.daily_limit' => 10,
         ]);
 
         // Create logs that exceed daily limit
@@ -50,8 +50,8 @@ describe('AlertService', function () {
 
     it('does not send duplicate daily alerts', function () {
         config([
-            'ai-guard.alerts.enabled' => true,
-            'ai-guard.alerts.daily_limit' => 10,
+            'ai-sentinel.alerts.enabled' => true,
+            'ai-sentinel.alerts.daily_limit' => 10,
         ]);
 
         AiPromptsLog::create([
@@ -76,8 +76,8 @@ describe('AlertService', function () {
 
     it('sends alert when monthly limit is exceeded', function () {
         config([
-            'ai-guard.alerts.enabled' => true,
-            'ai-guard.alerts.monthly_limit' => 100,
+            'ai-sentinel.alerts.enabled' => true,
+            'ai-sentinel.alerts.monthly_limit' => 100,
         ]);
 
         AiPromptsLog::create([
@@ -99,8 +99,8 @@ describe('AlertService', function () {
 
     it('does not send alert when under limit', function () {
         config([
-            'ai-guard.alerts.enabled' => true,
-            'ai-guard.alerts.daily_limit' => 100,
+            'ai-sentinel.alerts.enabled' => true,
+            'ai-sentinel.alerts.daily_limit' => 100,
         ]);
 
         AiPromptsLog::create([

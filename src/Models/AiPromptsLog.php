@@ -1,6 +1,6 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Models;
+namespace Lmromax\LaravelAiSentinel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,7 +34,7 @@ class AiPromptsLog extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('ai-guard.table_name', 'ai_prompt_logs'));
+        $this->setTable(config('ai-sentinel.table_name', 'ai_prompt_logs'));
     }
 
     public function user(): BelongsTo

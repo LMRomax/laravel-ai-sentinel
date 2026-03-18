@@ -1,9 +1,9 @@
 <?php
 
-namespace Lmromax\LaravelAiGuard\Http\Livewire;
+namespace Lmromax\LaravelAiSentinel\Http\Livewire;
 
 use Livewire\Component;
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
 
 class ProviderChart extends Component
 {
@@ -61,6 +61,6 @@ class ProviderChart extends Component
 
     public function render()
     {
-        return view('ai-guard::livewire.provider-chart');
+        return view('ai-sentinel::livewire.provider-chart');
     }
 }

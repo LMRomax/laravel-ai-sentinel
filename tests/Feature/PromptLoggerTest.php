@@ -1,7 +1,7 @@
 <?php
 
-use Lmromax\LaravelAiGuard\Models\AiPromptsLog;
-use Lmromax\LaravelAiGuard\Services\PromptLogger;
+use Lmromax\LaravelAiSentinel\Models\AiPromptsLog;
+use Lmromax\LaravelAiSentinel\Services\PromptLogger;
 
 beforeEach(function () {
     $this->logger = new PromptLogger;
@@ -49,7 +49,7 @@ describe('PromptLogger', function () {
     });
 
     it('does not log when package is disabled', function () {
-        config(['ai-guard.enabled' => false]);
+        config(['ai-sentinel.enabled' => false]);
 
         $this->logger->log([
             'provider' => 'openai',
