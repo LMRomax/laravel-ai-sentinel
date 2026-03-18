@@ -466,7 +466,3 @@ MIT — [Maxence Lemaitre](https://github.com/LMRomax)
 
 - **Pricing Data:** Automatically synced from [lmromax/ai-pricing-data](https://github.com/lmromax/ai-pricing-data)
 - **Built with:** Laravel, Livewire, Chart.js, Tailwind CSS
-
----
-
-**Made with ❤️ for the Laravel community**
