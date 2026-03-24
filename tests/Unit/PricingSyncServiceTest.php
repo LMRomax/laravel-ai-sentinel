@@ -50,7 +50,7 @@ describe('PricingSyncService', function () {
             ],
         ];
 
-        Cache::put('ai_guard_pricing', $mockData, now()->addDay());
+        Cache::put('ai_sentinel_pricing', $mockData, now()->addDay());
 
         $modelPricing = $this->service->getModelPricing('openai', 'gpt-4o');
 
@@ -67,7 +67,7 @@ describe('PricingSyncService', function () {
             ],
         ];
 
-        Cache::put('ai_guard_pricing', $mockData, now()->addDay());
+        Cache::put('ai_sentinel_pricing', $mockData, now()->addDay());
 
         $modelPricing = $this->service->getModelPricing('openai', 'unknown');
 
@@ -87,7 +87,7 @@ describe('PricingSyncService', function () {
         ]);
 
         // Old cache
-        Cache::put('ai_guard_pricing', ['old' => 'data'], now()->addDay());
+        Cache::put('ai_sentinel_pricing', ['old' => 'data'], now()->addDay());
 
         // Refresh
         $new = $this->service->refresh();

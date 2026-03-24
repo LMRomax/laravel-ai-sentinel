@@ -73,19 +73,19 @@ Add the following variables to your `.env` file:
 
 ```env
 # Enable tracking
-AI_GUARD_ENABLED=true
-AI_GUARD_AUTO_SYNC=true
+AI_SENTINEL_ENABLED=true
+AI_SENTINEL_AUTO_SYNC=true
 
 # Spending alerts
-AI_GUARD_ALERTS_ENABLED=true
-AI_GUARD_DAILY_LIMIT=100
-AI_GUARD_MONTHLY_LIMIT=1000
-AI_GUARD_ALERT_EMAILS=admin@example.com,billing@example.com
+AI_SENTINEL_ALERTS_ENABLED=true
+AI_SENTINEL_DAILY_LIMIT=100
+AI_SENTINEL_MONTHLY_LIMIT=1000
+AI_SENTINEL_ALERT_EMAILS=admin@example.com,billing@example.com
 
 # AI-powered prompt compression (optional but recommended)
-AI_GUARD_USE_AI_COMPRESSION=true
-AI_GUARD_COMPRESSION_PROVIDER=openai
-AI_GUARD_COMPRESSION_MODEL=gpt-4o-mini
+AI_SENTINEL_USE_AI_COMPRESSION=true
+AI_SENTINEL_COMPRESSION_PROVIDER=openai
+AI_SENTINEL_COMPRESSION_MODEL=gpt-4o-mini
 
 # API Keys (only for providers you use)
 OPENAI_API_KEY=sk-...
@@ -372,9 +372,9 @@ public function askClaude(string $question): string
 Configure spending limits in your `.env`:
 
 ```env
-AI_GUARD_DAILY_LIMIT=50      # Alert when daily spend exceeds $50
-AI_GUARD_MONTHLY_LIMIT=500   # Alert when monthly spend exceeds $500
-AI_GUARD_ALERT_EMAILS=admin@example.com,billing@example.com
+AI_SENTINEL_DAILY_LIMIT=50      # Alert when daily spend exceeds $50
+AI_SENTINEL_MONTHLY_LIMIT=500   # Alert when monthly spend exceeds $500
+AI_SENTINEL_ALERT_EMAILS=admin@example.com,billing@example.com
 ```
 
 Alerts are sent via Laravel's notification system. Supported channels: `mail`, `slack`, `discord`.

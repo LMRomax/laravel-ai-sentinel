@@ -12,7 +12,7 @@ class PricingSyncService
 
     protected int $cacheTtl = 86400; // 24 heures
 
-    protected string $cacheKey = 'ai_guard_pricing';
+    protected string $cacheKey = 'ai_sentinel_pricing';
 
     public function __construct()
     {
@@ -34,7 +34,7 @@ class PricingSyncService
                 return $this->fetchRemote();
             });
         } catch (\Exception $e) {
-            Log::warning('AI Guard: Could not get pricing data', [
+            Log::warning('AI Sentinel: Could not get pricing data', [
                 'error' => $e->getMessage(),
             ]);
 
@@ -116,12 +116,12 @@ class PricingSyncService
 
                 // Validation basique du JSON
                 if (! isset($data['providers'])) {
-                    Log::warning('AI Guard: Invalid pricing JSON structure');
+                    Log::warning('AI Sentinel: Invalid pricing JSON structure');
 
                     return null;
                 }
 
-                Log::info('AI Guard: Pricing synced successfully', [
+                Log::info('AI Sentinel: Pricing synced successfully', [
                     'last_updated' => $data['last_updated'] ?? 'unknown',
                     'version' => $data['version'] ?? 'unknown',
                 ]);
@@ -129,14 +129,14 @@ class PricingSyncService
                 return $data;
             }
 
-            Log::warning('AI Guard: Failed to fetch pricing', [
+            Log::warning('AI Sentinel: Failed to fetch pricing', [
                 'status' => $response->status(),
                 'url' => $this->pricingUrl,
             ]);
 
             return null;
         } catch (\Exception $e) {
-            Log::warning('AI Guard: Exception while fetching pricing', [
+            Log::warning('AI Sentinel: Exception while fetching pricing', [
                 'error' => $e->getMessage(),
                 'url' => $this->pricingUrl,
             ]);

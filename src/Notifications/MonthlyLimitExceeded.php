@@ -26,7 +26,7 @@ class MonthlyLimitExceeded extends Notification
 
         return (new MailMessage)
             ->error()
-            ->subject('🚨 AI Guard: Monthly Spending Limit Exceeded')
+            ->subject('🚨 AI Sentinel: Monthly Spending Limit Exceeded')
             ->greeting('Monthly Spending Alert!')
             ->line('Your AI spending this month has exceeded the monthly limit.')
             ->line('**Current spending:** $'.number_format($this->currentCost, 2))

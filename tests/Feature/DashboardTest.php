@@ -23,7 +23,7 @@ describe('Dashboard', function () {
         $response = $this->get('/ai-sentinel');
 
         $response->assertOk();
-        $response->assertSee('AI Guard');
+        $response->assertSee('AI Sentinel');
     });
 
     it('displays the stats cards component', function () {

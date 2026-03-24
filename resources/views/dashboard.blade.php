@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Guard Dashboard</title>
+    <title>AI Sentinel Dashboard</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
@@ -87,7 +87,7 @@
                     <div>
                         <h1
                             class="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                            AI Guard
+                            AI Sentinel
                         </h1>
                         <p class="text-sm text-gray-500 font-medium">Track your AI spending</p>
                     </div>
@@ -146,7 +146,7 @@
     <footer class="mt-12 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center text-sm text-gray-500">
-                <p>Powered by <span class="font-semibold text-gray-700">Laravel AI Guard</span></p>
+                <p>Powered by <span class="font-semibold text-gray-700">Laravel AI Sentinel</span></p>
             </div>
         </div>
     </footer>

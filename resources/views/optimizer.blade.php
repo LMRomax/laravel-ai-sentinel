@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Optimizer - AI Guard</title>
+    <title>Prompt Optimizer - AI Sentinel</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -42,7 +42,7 @@
                         <div>
                             <h1
                                 class="text-xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                                AI Guard
+                                AI Sentinel
                             </h1>
                         </div>
                     </a>

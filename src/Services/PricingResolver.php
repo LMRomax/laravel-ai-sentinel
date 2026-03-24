@@ -35,7 +35,7 @@ class PricingResolver
                 return $remotePricing;
             }
 
-            Log::info("AI Guard: Model [{$provider}/{$model}] not found in remote pricing, falling back.");
+            Log::info("AI Sentinel: Model [{$provider}/{$model}] not found in remote pricing, falling back.");
         }
 
         $configPricing = config("ai-sentinel.providers.{$provider}.models.{$model}");
@@ -105,7 +105,7 @@ class PricingResolver
             return ['input' => 0.0005, 'output' => 0.0008];
         }
 
-        Log::warning("AI Guard: Could not estimate pricing for [{$provider}/{$model}], using default.");
+        Log::warning("AI Sentinel: Could not estimate pricing for [{$provider}/{$model}], using default.");
 
         return config('ai-sentinel.default_pricing');
     }
@@ -119,7 +119,7 @@ class PricingResolver
     protected function throwUnknownModelException(string $provider, string $model): never
     {
         throw new \RuntimeException(
-            "AI Guard: Unknown model [{$provider}/{$model}]. ".
+            "AI Sentinel: Unknown model [{$provider}/{$model}]. ".
                 "Add it to 'custom_models' in config/ai-sentinel.php or change 'unknown_model_strategy'."
         );
     }

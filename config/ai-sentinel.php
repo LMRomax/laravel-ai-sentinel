@@ -4,13 +4,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | AI Guard Enabled
+    | AI Sentinel Enabled
     |--------------------------------------------------------------------------
     |
-    | Enable or disable AI Guard tracking globally.
+    | Enable or disable AI Sentinel tracking globally.
     |
     */
-    'enabled' => env('AI_GUARD_ENABLED', true),
+    'enabled' => env('AI_SENTINEL_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -50,10 +50,10 @@ return [
     | Cache is refreshed every 24 hours.
     |
     */
-    'auto_sync_pricing' => env('AI_GUARD_AUTO_SYNC', true),
+    'auto_sync_pricing' => env('AI_SENTINEL_AUTO_SYNC', true),
 
     'pricing_source_url' => env(
-        'AI_GUARD_PRICING_URL',
+        'AI_SENTINEL_PRICING_URL',
         'https://raw.githubusercontent.com/LMRomax/ai-pricing-data/master/pricing.json'
     ),
 
@@ -68,7 +68,7 @@ return [
     |   - 'fail'        : Throw an exception
     |
     */
-    'unknown_model_strategy' => env('AI_GUARD_UNKNOWN_MODEL_STRATEGY', 'use_default'),
+    'unknown_model_strategy' => env('AI_SENTINEL_UNKNOWN_MODEL_STRATEGY', 'use_default'),
 
     'default_pricing' => [
         'input' => 0.001, // $1.00 per 1M tokens
@@ -102,11 +102,11 @@ return [
     |
     */
     'alerts' => [
-        'enabled' => env('AI_GUARD_ALERTS_ENABLED', true),
-        'daily_limit' => env('AI_GUARD_DAILY_LIMIT', 100),
-        'monthly_limit' => env('AI_GUARD_MONTHLY_LIMIT', 1000),
+        'enabled' => env('AI_SENTINEL_ALERTS_ENABLED', true),
+        'daily_limit' => env('AI_SENTINEL_DAILY_LIMIT', 100),
+        'monthly_limit' => env('AI_SENTINEL_MONTHLY_LIMIT', 1000),
         'channels' => ['mail'], // mail, slack, discord (TODO: implement slack/discord)
-        'recipients' => explode(',', env('AI_GUARD_ALERT_EMAILS', '')), // comma-separated emails
+        'recipients' => explode(',', env('AI_SENTINEL_ALERT_EMAILS', '')), // comma-separated emails
     ],
 
     /*
@@ -118,14 +118,14 @@ return [
     |
     */
     'optimization' => [
-        'enabled' => env('AI_GUARD_OPTIMIZATION_ENABLED', true),
-        'enable_compression' => env('AI_GUARD_ENABLE_COMPRESSION', true),
-        'max_context_tokens' => env('AI_GUARD_MAX_CONTEXT_TOKENS', 4000),
+        'enabled' => env('AI_SENTINEL_OPTIMIZATION_ENABLED', true),
+        'enable_compression' => env('AI_SENTINEL_ENABLE_COMPRESSION', true),
+        'max_context_tokens' => env('AI_SENTINEL_MAX_CONTEXT_TOKENS', 4000),
 
         // AI-powered compression (recommended)
-        'use_ai_compression' => env('AI_GUARD_USE_AI_COMPRESSION', true),
-        'compression_provider' => env('AI_GUARD_COMPRESSION_PROVIDER', 'openai'), // openai, anthropic
-        'compression_model' => env('AI_GUARD_COMPRESSION_MODEL', 'gpt-4o-mini'), // Ultra cheap: $0.00015/1K tokens
+        'use_ai_compression' => env('AI_SENTINEL_USE_AI_COMPRESSION', true),
+        'compression_provider' => env('AI_SENTINEL_COMPRESSION_PROVIDER', 'openai'), // openai, anthropic
+        'compression_model' => env('AI_SENTINEL_COMPRESSION_MODEL', 'gpt-4o-mini'), // Ultra cheap: $0.00015/1K tokens
     ],
 
     /*
@@ -136,6 +136,6 @@ return [
     | Customize the table name used to store AI prompt logs.
     |
     */
-    'table_name' => env('AI_GUARD_TABLE_NAME', 'ai_prompt_logs'),
+    'table_name' => env('AI_SENTINEL_TABLE_NAME', 'ai_prompt_logs'),
 
 ];

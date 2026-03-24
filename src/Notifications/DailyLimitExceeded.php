@@ -26,7 +26,7 @@ class DailyLimitExceeded extends Notification
 
         return (new MailMessage)
             ->error()
-            ->subject('⚠️ AI Guard: Daily Spending Limit Exceeded')
+            ->subject('⚠️ AI Sentinel: Daily Spending Limit Exceeded')
             ->greeting('Daily Spending Alert!')
             ->line('Your AI spending today has exceeded the daily limit.')
             ->line('**Current spending:** $'.number_format($this->currentCost, 2))

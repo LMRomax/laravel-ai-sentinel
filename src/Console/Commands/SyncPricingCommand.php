@@ -16,7 +16,7 @@ class SyncPricingCommand extends Command
     public function handle(PricingSyncService $syncService): int
     {
         $this->info('');
-        $this->info('🤖 AI Guard - Pricing Sync');
+        $this->info('🤖 AI Sentinel - Pricing Sync');
         $this->info('==========================');
 
         // Force refresh si option --force
